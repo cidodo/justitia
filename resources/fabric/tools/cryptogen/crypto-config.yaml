@@ -1,0 +1,28 @@
+OrdererOrgs:
+  - Name: Orderer
+    Domain: suzhou.com
+    CA:
+       Hostname: ca # implicitly ca.suzhou.com
+       Country: CHN
+       Province: Jiangsu
+       Locality: Suzhou
+       OrganizationalUnit: Land DBC
+    Specs:
+      - Hostname: orderer
+
+PeerOrgs:
+  - Name: Land  #Suzhou Land and Resources Bureau
+    Domain: land.suzhou.com
+    CA:
+       Hostname: ca # implicitly ca.slrb.suzhou.com
+       Country: CHN
+       Province: Jiangsu
+       Locality: Suzhou
+       OrganizationalUnit: Land DBC
+    EnableNodeOUs: false
+    Template:
+      Count: 2
+    Users:
+      - Identify: land
+      - Identify: land
+      - Identify: land

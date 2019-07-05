@@ -1,0 +1,27 @@
+server:
+  port: 8082
+  ssl:
+    enabled: false
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/justitia?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowMultiQueries=true
+    username: root
+    password: root
+    driverClassName: com.mysql.jdbc.Driver
+  thymeleaf:
+    cache: false
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: org.hyperledger.justitia.dao.entity
+external-resources:
+  temp: /resources/temp/
+  fabric:
+    config: /resources/fabric/config/config.properties
+    tools:
+      configtxgen: /resources/fabric/tools/configtxgen/
+      configtxlator: /resources/fabric/tools/configtxlator/
+      cryptogen: /resources/fabric/tools/cryptogen/
+fabric:
+  channel:
+    manage:
+      chaincode: CMSCC

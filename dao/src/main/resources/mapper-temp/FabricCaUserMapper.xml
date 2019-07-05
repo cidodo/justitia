@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.FabricCaUserMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.FabricCaUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from fabric_ca_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.FabricCaUser" >
+    insert into fabric_ca_user (id)
+    values (#{id,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.FabricCaUser" >
+    insert into fabric_ca_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+</mapper>

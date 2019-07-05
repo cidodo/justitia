@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.OrganizationMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Organization" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="msp_tab_id" property="mspTabId" jdbcType="VARCHAR" />
+    <result column="ca_id" property="caId" jdbcType="VARCHAR" />
+    <result column="tls_enable" property="tlsEnable" jdbcType="BIT" />
+    <result column="tls_ca_id" property="tlsCaId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, type, msp_id, msp_tab_id, ca_id, tls_enable, tls_ca_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from organization
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from organization
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Organization" >
+    insert into organization (id, name, type, 
+      msp_id, msp_tab_id, ca_id, 
+      tls_enable, tls_ca_id)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{mspId,jdbcType=VARCHAR}, #{mspTabId,jdbcType=VARCHAR}, #{caId,jdbcType=VARCHAR}, 
+      #{tlsEnable,jdbcType=BIT}, #{tlsCaId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Organization" >
+    insert into organization
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="mspId != null" >
+        msp_id,
+      </if>
+      <if test="mspTabId != null" >
+        msp_tab_id,
+      </if>
+      <if test="caId != null" >
+        ca_id,
+      </if>
+      <if test="tlsEnable != null" >
+        tls_enable,
+      </if>
+      <if test="tlsCaId != null" >
+        tls_ca_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="mspId != null" >
+        #{mspId,jdbcType=VARCHAR},
+      </if>
+      <if test="mspTabId != null" >
+        #{mspTabId,jdbcType=VARCHAR},
+      </if>
+      <if test="caId != null" >
+        #{caId,jdbcType=VARCHAR},
+      </if>
+      <if test="tlsEnable != null" >
+        #{tlsEnable,jdbcType=BIT},
+      </if>
+      <if test="tlsCaId != null" >
+        #{tlsCaId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Organization" >
+    update organization
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="mspId != null" >
+        msp_id = #{mspId,jdbcType=VARCHAR},
+      </if>
+      <if test="mspTabId != null" >
+        msp_tab_id = #{mspTabId,jdbcType=VARCHAR},
+      </if>
+      <if test="caId != null" >
+        ca_id = #{caId,jdbcType=VARCHAR},
+      </if>
+      <if test="tlsEnable != null" >
+        tls_enable = #{tlsEnable,jdbcType=BIT},
+      </if>
+      <if test="tlsCaId != null" >
+        tls_ca_id = #{tlsCaId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Organization" >
+    update organization
+    set name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      msp_id = #{mspId,jdbcType=VARCHAR},
+      msp_tab_id = #{mspTabId,jdbcType=VARCHAR},
+      ca_id = #{caId,jdbcType=VARCHAR},
+      tls_enable = #{tlsEnable,jdbcType=BIT},
+      tls_ca_id = #{tlsCaId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+
+
+
+
+
+
+
+
+
+
+  <sql id="Organization_Column_List" >
+        id, `name`, `type`, msp_id, msp_tab_id, ca_id, tls_enable, tls_ca_id
+    </sql>
+
+  <sql id="Msp_Column_List" >
+        id, admin_users_id, ca_certs, intermediate_certs, key_store, sign_certs, tls_ca_certs,
+    tls_intermediate_certs, tls_certs, tls_key, crls, config_file
+    </sql>
+
+  <sql id="Ca_Column_List" >
+        id, `name`, root, parent, ca_type, ca_server, cert, `key`
+    </sql>
+
+  <sql id="Fabric_User_Column_List" >
+        id, organization_id, admin, msp_id, tag
+    </sql>
+
+  <resultMap id="OrganizationBaseInfo" type="org.hyperledger.justitia.dao.bean.Organization" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="tls_enable" property="tlsEnable" jdbcType="BIT" />
+  </resultMap>
+
+  <resultMap id="MspInfo" type="org.hyperledger.justitia.dao.bean.Msp">
+    <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
+    <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
+    <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="key_store" property="keyStore" jdbcType="LONGVARCHAR" />
+    <result column="sign_certs" property="signCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_ca_certs" property="tlsCaCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_intermediate_certs" property="tlsIntermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_certs" property="tlsCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_key" property="tlsKey" jdbcType="LONGVARCHAR" />
+    <result column="crls" property="crls" jdbcType="LONGVARCHAR" />
+    <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <resultMap id="CaInfo" type="org.hyperledger.justitia.dao.bean.Ca">
+    <result column="cert" property="cert" jdbcType="LONGVARCHAR" />
+    <result column="key" property="key" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <resultMap id="UserInfo" type="org.hyperledger.justitia.dao.bean.FabricUser">
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="admin" property="admin" jdbcType="BIT" />
+    <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+  </resultMap>
+
+  <resultMap id="OrganizationInfoWithMsp" type="org.hyperledger.justitia.dao.bean.Organization">
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="tls_enable" property="tlsEnable" jdbcType="BIT" />
+    <collection column="{mspId = msp_tab_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+    <collection column="{OrganizationId = id}" property="adminUsers" ofType="org.hyperledger.justitia.dao.bean.FabricUser" select="selectAdminUsers"/>
+  </resultMap>
+
+  <resultMap id="OrganizationInfo" type="org.hyperledger.justitia.dao.bean.Organization" extends="OrganizationInfoWithMsp">
+    <collection column="{caId = ca_id}" property="ca" ofType="org.hyperledger.justitia.dao.bean.Ca" select="getSignCa"/>
+    <collection column="{tlsCaId = tls_ca_id}" property="tlsCa" ofType="org.hyperledger.justitia.dao.bean.Ca" select="getTlsCa"/>
+  </resultMap>
+
+  <select id="getOrganizationBase" resultMap="OrganizationBaseInfo">
+    SELECT <include refid="Organization_Column_List" />
+    FROM `organization`
+    WHERE id = (SELECT `id` FROM `organization` LIMIT 1)
+  </select>
+
+  <select id="getOrganizationWithMsp" resultMap="OrganizationInfoWithMsp">
+    SELECT <include refid="Organization_Column_List" />
+    FROM `organization`
+    WHERE id = (SELECT `id` FROM `organization` LIMIT 1)
+  </select>
+
+  <select id="getOrganizationWithCrypto" resultMap="OrganizationInfo">
+    SELECT <include refid="Organization_Column_List" />
+    FROM `organization`
+    WHERE id = (SELECT `id` FROM `organization` LIMIT 1)
+  </select>
+
+  <select id="getMsp" resultMap="MspInfo">
+    SELECT <include refid="Msp_Column_List" />
+    FROM `msp`
+    WHERE id = #{mspId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getSignCa" resultMap="CaInfo">
+    SELECT <include refid="Ca_Column_List" />
+    FROM `ca`
+    WHERE id = #{caId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getTlsCa" resultMap="CaInfo">
+    SELECT <include refid="Ca_Column_List" />
+    FROM `ca`
+    WHERE id = #{tlsCaId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAdminUsers" resultMap="UserInfo">
+    SELECT <include refid="Fabric_User_Column_List" />
+    FROM `fabric_user`
+    WHERE admin = 1 AND organization_id = #{OrganizationId,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteOrganization" >
+    delete from organization
+    where  id = (SELECT `id` FROM `organization` LIMIT 1)
+  </delete>
+</mapper>

@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.OrdererMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Orderer" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="port" property="port" jdbcType="INTEGER" />
+    <result column="container_id" property="containerId" jdbcType="VARCHAR" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="tls_enable" property="tlsEnable" jdbcType="BIT" />
+    <result column="double_verify" property="doubleVerify" jdbcType="BIT" />
+    <result column="system_chain_id" property="systemChainId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, ip, port, container_id, msp_id, tls_enable, double_verify, system_chain_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from orderer
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from orderer
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+    insert into orderer (id, ip, port, 
+      container_id, msp_id, tls_enable, 
+      double_verify, system_chain_id)
+    values (#{id,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, #{port,jdbcType=INTEGER}, 
+      #{containerId,jdbcType=VARCHAR}, #{mspId,jdbcType=VARCHAR}, #{tlsEnable,jdbcType=BIT}, 
+      #{doubleVerify,jdbcType=BIT}, #{systemChainId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+    insert into orderer
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="port != null" >
+        port,
+      </if>
+      <if test="containerId != null" >
+        container_id,
+      </if>
+      <if test="mspId != null" >
+        msp_id,
+      </if>
+      <if test="tlsEnable != null" >
+        tls_enable,
+      </if>
+      <if test="doubleVerify != null" >
+        double_verify,
+      </if>
+      <if test="systemChainId != null" >
+        system_chain_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        #{port,jdbcType=INTEGER},
+      </if>
+      <if test="containerId != null" >
+        #{containerId,jdbcType=VARCHAR},
+      </if>
+      <if test="mspId != null" >
+        #{mspId,jdbcType=VARCHAR},
+      </if>
+      <if test="tlsEnable != null" >
+        #{tlsEnable,jdbcType=BIT},
+      </if>
+      <if test="doubleVerify != null" >
+        #{doubleVerify,jdbcType=BIT},
+      </if>
+      <if test="systemChainId != null" >
+        #{systemChainId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+    update orderer
+    <set >
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null" >
+        port = #{port,jdbcType=INTEGER},
+      </if>
+      <if test="containerId != null" >
+        container_id = #{containerId,jdbcType=VARCHAR},
+      </if>
+      <if test="mspId != null" >
+        msp_id = #{mspId,jdbcType=VARCHAR},
+      </if>
+      <if test="tlsEnable != null" >
+        tls_enable = #{tlsEnable,jdbcType=BIT},
+      </if>
+      <if test="doubleVerify != null" >
+        double_verify = #{doubleVerify,jdbcType=BIT},
+      </if>
+      <if test="systemChainId != null" >
+        system_chain_id = #{systemChainId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+    update orderer
+    set ip = #{ip,jdbcType=VARCHAR},
+      port = #{port,jdbcType=INTEGER},
+      container_id = #{containerId,jdbcType=VARCHAR},
+      msp_id = #{mspId,jdbcType=VARCHAR},
+      tls_enable = #{tlsEnable,jdbcType=BIT},
+      double_verify = #{doubleVerify,jdbcType=BIT},
+      system_chain_id = #{systemChainId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+
+
+
+
+
+
+
+  <sql id="Msp_Column_List" >
+        id, admin_users_id, ca_certs, intermediate_certs, key_store, sign_certs, tls_ca_certs,
+    tls_intermediate_certs, tls_certs, tls_key, crls, config_file
+    </sql>
+
+  <resultMap id="MspInfo" type="org.hyperledger.justitia.dao.bean.Msp">
+    <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
+    <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
+    <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="key_store" property="keyStore" jdbcType="LONGVARCHAR" />
+    <result column="sign_certs" property="signCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_ca_certs" property="tlsCaCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_intermediate_certs" property="tlsIntermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_certs" property="tlsCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_key" property="tlsKey" jdbcType="LONGVARCHAR" />
+    <result column="crls" property="crls" jdbcType="LONGVARCHAR" />
+    <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <resultMap id="OrdererBase" type="org.hyperledger.justitia.dao.bean.Orderer" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="port" property="port" jdbcType="INTEGER" />
+    <result column="container_id" property="containerId" jdbcType="VARCHAR" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="tls_enable" property="tlsEnable" jdbcType="BIT" />
+    <result column="double_verify" property="doubleVerify" jdbcType="BIT" />
+    <result column="system_chain_id" property="systemChainId" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="OrdererWithTls" type="org.hyperledger.justitia.dao.bean.Orderer" extends="OrdererBase">
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getTls"/>
+  </resultMap>
+
+  <resultMap id="OrdererWithCrypto" type="org.hyperledger.justitia.dao.bean.Orderer" extends="OrdererBase">
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+  </resultMap>
+
+
+  <select id="selectOrderers" resultMap="OrdererBase">
+    select
+    <include refid="Base_Column_List" />
+    from orderer
+  </select>
+
+  <select id="selectOrderersWithTls" resultMap="OrdererWithTls">
+    select
+    <include refid="Base_Column_List" />
+    from orderer
+  </select>
+
+  <select id="selectOrderersWithCrypto" resultMap="OrdererWithTls">
+    select
+    <include refid="Base_Column_List" />
+    from orderer
+  </select>
+
+  <select id="getOrderer" resultMap="OrdererBase"  parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from orderer
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getOrdererWithTls" resultMap="OrdererWithTls" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from orderer
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getOrdererWithCrypto" resultMap="OrdererWithTls" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from orderer
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getTls" resultMap="MspInfo">
+    select tls_ca_certs, tls_certs, tls_key
+    from msp
+    WHERE id = #{mspId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getMsp" resultMap="MspInfo">
+    SELECT <include refid="Msp_Column_List" />
+    FROM `msp`
+    WHERE id = #{mspId,jdbcType=VARCHAR}
+  </select>
+</mapper>

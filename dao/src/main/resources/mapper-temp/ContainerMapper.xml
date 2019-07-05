@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.ContainerMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Container" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="host_id" property="hostId" jdbcType="VARCHAR" />
+    <result column="container_name" property="containerName" jdbcType="VARCHAR" />
+    <result column="image" property="image" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+    <result column="working_dir" property="workingDir" jdbcType="VARCHAR" />
+    <result column="network_mode" property="networkMode" jdbcType="VARCHAR" />
+    <result column="port_map" property="portMap" jdbcType="VARCHAR" />
+    <result column="deployer" property="deployer" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Container" extends="BaseResultMap" >
+    <result column="volumes" property="volumes" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, host_id, container_name, image, tag, working_dir, network_mode, port_map, deployer
+  </sql>
+  <sql id="Blob_Column_List" >
+    volumes
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from container
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from container
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+    insert into container (id, host_id, container_name, 
+      image, tag, working_dir, 
+      network_mode, port_map, deployer, 
+      volumes)
+    values (#{id,jdbcType=VARCHAR}, #{hostId,jdbcType=VARCHAR}, #{containerName,jdbcType=VARCHAR}, 
+      #{image,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR}, #{workingDir,jdbcType=VARCHAR}, 
+      #{networkMode,jdbcType=VARCHAR}, #{portMap,jdbcType=VARCHAR}, #{deployer,jdbcType=VARCHAR}, 
+      #{volumes,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+    insert into container
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="hostId != null" >
+        host_id,
+      </if>
+      <if test="containerName != null" >
+        container_name,
+      </if>
+      <if test="image != null" >
+        image,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+      <if test="workingDir != null" >
+        working_dir,
+      </if>
+      <if test="networkMode != null" >
+        network_mode,
+      </if>
+      <if test="portMap != null" >
+        port_map,
+      </if>
+      <if test="deployer != null" >
+        deployer,
+      </if>
+      <if test="volumes != null" >
+        volumes,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="hostId != null" >
+        #{hostId,jdbcType=VARCHAR},
+      </if>
+      <if test="containerName != null" >
+        #{containerName,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="workingDir != null" >
+        #{workingDir,jdbcType=VARCHAR},
+      </if>
+      <if test="networkMode != null" >
+        #{networkMode,jdbcType=VARCHAR},
+      </if>
+      <if test="portMap != null" >
+        #{portMap,jdbcType=VARCHAR},
+      </if>
+      <if test="deployer != null" >
+        #{deployer,jdbcType=VARCHAR},
+      </if>
+      <if test="volumes != null" >
+        #{volumes,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+    update container
+    <set >
+      <if test="hostId != null" >
+        host_id = #{hostId,jdbcType=VARCHAR},
+      </if>
+      <if test="containerName != null" >
+        container_name = #{containerName,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        image = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="workingDir != null" >
+        working_dir = #{workingDir,jdbcType=VARCHAR},
+      </if>
+      <if test="networkMode != null" >
+        network_mode = #{networkMode,jdbcType=VARCHAR},
+      </if>
+      <if test="portMap != null" >
+        port_map = #{portMap,jdbcType=VARCHAR},
+      </if>
+      <if test="deployer != null" >
+        deployer = #{deployer,jdbcType=VARCHAR},
+      </if>
+      <if test="volumes != null" >
+        volumes = #{volumes,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+    update container
+    set host_id = #{hostId,jdbcType=VARCHAR},
+      container_name = #{containerName,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      working_dir = #{workingDir,jdbcType=VARCHAR},
+      network_mode = #{networkMode,jdbcType=VARCHAR},
+      port_map = #{portMap,jdbcType=VARCHAR},
+      deployer = #{deployer,jdbcType=VARCHAR},
+      volumes = #{volumes,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+    update container
+    set host_id = #{hostId,jdbcType=VARCHAR},
+      container_name = #{containerName,jdbcType=VARCHAR},
+      image = #{image,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      working_dir = #{workingDir,jdbcType=VARCHAR},
+      network_mode = #{networkMode,jdbcType=VARCHAR},
+      port_map = #{portMap,jdbcType=VARCHAR},
+      deployer = #{deployer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,6 +1,15 @@
+### tools
+resources/fabric/tools/configtxgen/configtxgen
+resources/fabric/tools/configtxgen/configtxgen.exe
+resources/fabric/tools/configtxlator/configtxlator
+resources/fabric/tools/configtxlator/configtxlator.exe
+resources/fabric/tools/cryptogen/cryptogen
+resources/fabric/tools/cryptogen/cryptogen.exe
+resources/temp
+logs
+
 ### Java template
 *.class
-*.svn
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

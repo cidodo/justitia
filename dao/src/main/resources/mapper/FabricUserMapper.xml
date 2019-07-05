@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.FabricUserMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.FabricUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
+    <result column="admin" property="admin" jdbcType="BIT" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.FabricUser" extends="BaseResultMap" >
+    <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, organization_id, admin, msp_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    tag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from fabric_user
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from fabric_user
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+    insert into fabric_user (id, organization_id, admin, 
+      msp_id, tag)
+    values (#{id,jdbcType=VARCHAR}, #{organizationId,jdbcType=VARCHAR}, #{admin,jdbcType=BIT}, 
+      #{mspId,jdbcType=VARCHAR}, #{tag,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+    insert into fabric_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="organizationId != null" >
+        organization_id,
+      </if>
+      <if test="admin != null" >
+        admin,
+      </if>
+      <if test="mspId != null" >
+        msp_id,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationId != null" >
+        #{organizationId,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null" >
+        #{admin,jdbcType=BIT},
+      </if>
+      <if test="mspId != null" >
+        #{mspId,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+    update fabric_user
+    <set >
+      <if test="organizationId != null" >
+        organization_id = #{organizationId,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null" >
+        admin = #{admin,jdbcType=BIT},
+      </if>
+      <if test="mspId != null" >
+        msp_id = #{mspId,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        tag = #{tag,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+    update fabric_user
+    set organization_id = #{organizationId,jdbcType=VARCHAR},
+      admin = #{admin,jdbcType=BIT},
+      msp_id = #{mspId,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+    update fabric_user
+    set organization_id = #{organizationId,jdbcType=VARCHAR},
+      admin = #{admin,jdbcType=BIT},
+      msp_id = #{mspId,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+
+
+
+
+
+
+  <sql id="FabricUser_Column_List" >
+        id, organization_id, admin, msp_id, tag
+    </sql>
+
+  <sql id="Msp_Column_List" >
+        id, admin_users_id, ca_certs, intermediate_certs, key_store, sign_certs, tls_ca_certs,
+    tls_intermediate_certs, tls_certs, tls_key, crls, config_file
+    </sql>
+
+
+  <resultMap id="MspInfo" type="org.hyperledger.justitia.dao.bean.Msp">
+    <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
+    <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
+    <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="key_store" property="keyStore" jdbcType="LONGVARCHAR" />
+    <result column="sign_certs" property="signCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_ca_certs" property="tlsCaCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_intermediate_certs" property="tlsIntermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_certs" property="tlsCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_key" property="tlsKey" jdbcType="LONGVARCHAR" />
+    <result column="crls" property="crls" jdbcType="LONGVARCHAR" />
+    <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <resultMap id="UserBase" type="org.hyperledger.justitia.dao.bean.FabricUser" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
+    <result column="admin" property="admin" jdbcType="BIT" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+  <resultMap id="FabricUserWithMsp" type="org.hyperledger.justitia.dao.bean.FabricUser">
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
+    <result column="admin" property="admin" jdbcType="BIT" />
+    <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
+    <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+  </resultMap>
+
+  <select id="selectUsersBase" resultMap="UserBase">
+    select <include refid="FabricUser_Column_List" />
+    from fabric_user
+  </select>
+
+  <select id="getAdminUser" resultMap="FabricUserWithMsp">
+    select <include refid="FabricUser_Column_List" />
+    from fabric_user
+    where admin = 1 and organization_id = (SELECT `id` FROM `organization` LIMIT 1)
+    LIMIT 1
+  </select>
+
+  <select id="getMsp" resultMap="MspInfo">
+    SELECT <include refid="Msp_Column_List" />
+    FROM `msp`
+    WHERE id = #{mspId,jdbcType=VARCHAR}
+  </select>
+</mapper>

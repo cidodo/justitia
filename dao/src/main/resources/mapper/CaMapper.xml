@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.CaMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Ca" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="root" property="root" jdbcType="BIT" />
+    <result column="parent" property="parent" jdbcType="VARCHAR" />
+    <result column="ca_type" property="caType" jdbcType="VARCHAR" />
+    <result column="ca_server" property="caServer" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Ca" extends="BaseResultMap" >
+    <result column="cert" property="cert" jdbcType="LONGVARCHAR" />
+    <result column="key" property="key" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, root, parent, ca_type, ca_server
+  </sql>
+  <sql id="Blob_Column_List" >
+    cert, key
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from ca
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from ca
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+    insert into ca (id, name, root, parent, 
+      ca_type, ca_server, cert, 
+      key)
+    values (#{id,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{root,jdbcType=BIT}, #{parent,jdbcType=VARCHAR}, 
+      #{caType,jdbcType=VARCHAR}, #{caServer,jdbcType=VARCHAR}, #{cert,jdbcType=LONGVARCHAR}, 
+      #{key,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+    insert into ca
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="root != null" >
+        root,
+      </if>
+      <if test="parent != null" >
+        parent,
+      </if>
+      <if test="caType != null" >
+        ca_type,
+      </if>
+      <if test="caServer != null" >
+        ca_server,
+      </if>
+      <if test="cert != null" >
+        cert,
+      </if>
+      <if test="key != null" >
+        key,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="root != null" >
+        #{root,jdbcType=BIT},
+      </if>
+      <if test="parent != null" >
+        #{parent,jdbcType=VARCHAR},
+      </if>
+      <if test="caType != null" >
+        #{caType,jdbcType=VARCHAR},
+      </if>
+      <if test="caServer != null" >
+        #{caServer,jdbcType=VARCHAR},
+      </if>
+      <if test="cert != null" >
+        #{cert,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="key != null" >
+        #{key,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+    update ca
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="root != null" >
+        root = #{root,jdbcType=BIT},
+      </if>
+      <if test="parent != null" >
+        parent = #{parent,jdbcType=VARCHAR},
+      </if>
+      <if test="caType != null" >
+        ca_type = #{caType,jdbcType=VARCHAR},
+      </if>
+      <if test="caServer != null" >
+        ca_server = #{caServer,jdbcType=VARCHAR},
+      </if>
+      <if test="cert != null" >
+        cert = #{cert,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="key != null" >
+        key = #{key,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+    update ca
+    set name = #{name,jdbcType=VARCHAR},
+      root = #{root,jdbcType=BIT},
+      parent = #{parent,jdbcType=VARCHAR},
+      ca_type = #{caType,jdbcType=VARCHAR},
+      ca_server = #{caServer,jdbcType=VARCHAR},
+      cert = #{cert,jdbcType=LONGVARCHAR},
+      key = #{key,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+    update ca
+    set name = #{name,jdbcType=VARCHAR},
+      root = #{root,jdbcType=BIT},
+      parent = #{parent,jdbcType=VARCHAR},
+      ca_type = #{caType,jdbcType=VARCHAR},
+      ca_server = #{caServer,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.hyperledger.justitia.dao.mapper.MspMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Msp" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Msp" extends="BaseResultMap" >
+    <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
+    <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
+    <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="key_store" property="keyStore" jdbcType="LONGVARCHAR" />
+    <result column="sign_certs" property="signCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_ca_certs" property="tlsCaCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_intermediate_certs" property="tlsIntermediateCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_certs" property="tlsCerts" jdbcType="LONGVARCHAR" />
+    <result column="tls_key" property="tlsKey" jdbcType="LONGVARCHAR" />
+    <result column="crls" property="crls" jdbcType="LONGVARCHAR" />
+    <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id
+  </sql>
+  <sql id="Blob_Column_List" >
+    admin_users_id, ca_certs, intermediate_certs, key_store, sign_certs, tls_ca_certs, 
+    tls_intermediate_certs, tls_certs, tls_key, crls, config_file
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from msp
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from msp
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+    insert into msp (id, admin_users_id, ca_certs, 
+      intermediate_certs, key_store, sign_certs, 
+      tls_ca_certs, tls_intermediate_certs, 
+      tls_certs, tls_key, crls, 
+      config_file)
+    values (#{id,jdbcType=VARCHAR}, #{adminUsersId,jdbcType=LONGVARCHAR}, #{caCerts,jdbcType=LONGVARCHAR}, 
+      #{intermediateCerts,jdbcType=LONGVARCHAR}, #{keyStore,jdbcType=LONGVARCHAR}, #{signCerts,jdbcType=LONGVARCHAR}, 
+      #{tlsCaCerts,jdbcType=LONGVARCHAR}, #{tlsIntermediateCerts,jdbcType=LONGVARCHAR}, 
+      #{tlsCerts,jdbcType=LONGVARCHAR}, #{tlsKey,jdbcType=LONGVARCHAR}, #{crls,jdbcType=LONGVARCHAR}, 
+      #{configFile,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+    insert into msp
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="adminUsersId != null" >
+        admin_users_id,
+      </if>
+      <if test="caCerts != null" >
+        ca_certs,
+      </if>
+      <if test="intermediateCerts != null" >
+        intermediate_certs,
+      </if>
+      <if test="keyStore != null" >
+        key_store,
+      </if>
+      <if test="signCerts != null" >
+        sign_certs,
+      </if>
+      <if test="tlsCaCerts != null" >
+        tls_ca_certs,
+      </if>
+      <if test="tlsIntermediateCerts != null" >
+        tls_intermediate_certs,
+      </if>
+      <if test="tlsCerts != null" >
+        tls_certs,
+      </if>
+      <if test="tlsKey != null" >
+        tls_key,
+      </if>
+      <if test="crls != null" >
+        crls,
+      </if>
+      <if test="configFile != null" >
+        config_file,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="adminUsersId != null" >
+        #{adminUsersId,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="caCerts != null" >
+        #{caCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="intermediateCerts != null" >
+        #{intermediateCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="keyStore != null" >
+        #{keyStore,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="signCerts != null" >
+        #{signCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsCaCerts != null" >
+        #{tlsCaCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsIntermediateCerts != null" >
+        #{tlsIntermediateCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsCerts != null" >
+        #{tlsCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsKey != null" >
+        #{tlsKey,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="crls != null" >
+        #{crls,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="configFile != null" >
+        #{configFile,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+    update msp
+    <set >
+      <if test="adminUsersId != null" >
+        admin_users_id = #{adminUsersId,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="caCerts != null" >
+        ca_certs = #{caCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="intermediateCerts != null" >
+        intermediate_certs = #{intermediateCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="keyStore != null" >
+        key_store = #{keyStore,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="signCerts != null" >
+        sign_certs = #{signCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsCaCerts != null" >
+        tls_ca_certs = #{tlsCaCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsIntermediateCerts != null" >
+        tls_intermediate_certs = #{tlsIntermediateCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsCerts != null" >
+        tls_certs = #{tlsCerts,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tlsKey != null" >
+        tls_key = #{tlsKey,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="crls != null" >
+        crls = #{crls,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="configFile != null" >
+        config_file = #{configFile,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+    update msp
+    set admin_users_id = #{adminUsersId,jdbcType=LONGVARCHAR},
+      ca_certs = #{caCerts,jdbcType=LONGVARCHAR},
+      intermediate_certs = #{intermediateCerts,jdbcType=LONGVARCHAR},
+      key_store = #{keyStore,jdbcType=LONGVARCHAR},
+      sign_certs = #{signCerts,jdbcType=LONGVARCHAR},
+      tls_ca_certs = #{tlsCaCerts,jdbcType=LONGVARCHAR},
+      tls_intermediate_certs = #{tlsIntermediateCerts,jdbcType=LONGVARCHAR},
+      tls_certs = #{tlsCerts,jdbcType=LONGVARCHAR},
+      tls_key = #{tlsKey,jdbcType=LONGVARCHAR},
+      crls = #{crls,jdbcType=LONGVARCHAR},
+      config_file = #{configFile,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

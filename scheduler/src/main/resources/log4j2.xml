@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Don't forget to set system property
+-DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+     to make all loggers asynchronous. -->
+
+<Configuration>
+    <properties>   
+        <property name="LOG_HOME">logs</property>
+    </properties>
+    <appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+            <!--<RegexFilter regex=".*\(NO_SOURCE_FILE:0\)" onMatch="DENY" onMismatch="ACCEPT"/>-->
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%-8.8t] %-20.20c{1}[%-20.20M]:%-3L - %m%n"/>
+        </Console>
+        <!-- Async Loggers will auto-flush in batches, so switch off immediateFlush. -->
+        <RollingRandomAccessFile  name="blu" fileName="${LOG_HOME}/blu.log"
+                                  filePattern="${LOG_HOME}/DSPSyncService/$${date:yyyy-MM}/blu-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%-8.8t] %-20.20c{1}[%-20.20M]:%-3L - %m%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="30 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="20"/>
+        </RollingRandomAccessFile >
+    </appenders>
+
+
+    <loggers>
+        <root level="info">
+            <appender-ref ref="Console"/>
+            <appender-ref ref="blu"/>
+        </root>
+
+        <logger name="org.hyperledger.justitia" level="info" additivity="false">
+            <appender-ref ref="blu"/>
+        </logger>
+    </loggers>
+</Configuration>

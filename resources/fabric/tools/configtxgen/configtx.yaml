@@ -1,0 +1,68 @@
+Organizations:
+- &id006
+  Name: Slrb
+  ID: SlrbMSP
+  MSPDir: D:\workspace\justitia\resources\temp\1561466791061736\msp
+  Policies:
+    Readers: {Type: Signature, Rule: OR('SlrbMSP.member')}
+    Writers: {Type: Signature, Rule: OR('SlrbMSP.member')}
+    Admins: {Type: Signature, Rule: OR('SlrbMSP.admin')}
+Capabilities:
+  Channel: {V1_3: true}
+  Orderer: {V1_1: true}
+  Application: {V1_3: true, V1_2: false, V1_1: false}
+Application:
+  Organizations: null
+  Policies: &id009
+    Readers: {Type: ImplicitMeta, Rule: ANY Readers}
+    Writers: {Type: ImplicitMeta, Rule: ANY Writers}
+    Admins: {Type: ImplicitMeta, Rule: MAJORITY Admins}
+  Capabilities: &id010 {V1_3: true, V1_2: false, V1_1: false}
+Orderer:
+  OrdererType: solo
+  Addresses: &id003 ['orderer.example.com:7050']
+  BatchTimeout: 2s
+  BatchSize: &id004 {MaxMessageCount: 10, AbsoluteMaxBytes: 10 MB, PreferredMaxBytes: 512
+      KB}
+  MaxChannels: 0
+  Kafka: &id005
+    Brokers: ['kafka0:9092', 'kafka1:9092', 'kafka2:9092', 'kafka3:9092']
+  Organizations: null
+  Policies: &id007
+    Readers: {Type: ImplicitMeta, Rule: ANY Readers}
+    Writers: {Type: ImplicitMeta, Rule: ANY Writers}
+    Admins: {Type: ImplicitMeta, Rule: MAJORITY Admins}
+    BlockValidation: {Type: ImplicitMeta, Rule: ANY Writers}
+  Capabilities: &id008 {V1_1: true}
+Channel:
+  Policies: &id001
+    Readers: {Type: Signature, Rule: OR('SlrbMSP.member')}
+    Writers: {Type: Signature, Rule: OR('SlrbMSP.member')}
+    Admins: {Type: Signature, Rule: OR('SlrbMSP.admin')}
+  Capabilities: &id002 {V1_3: true}
+Profiles:
+  OrdererGenesis:
+    Policies: *id001
+    Capabilities: *id002
+    Orderer:
+      OrdererType: solo
+      Addresses: *id003
+      BatchTimeout: 2s
+      BatchSize: *id004
+      MaxChannels: 0
+      Kafka: *id005
+      Organizations:
+      - *id006
+      Policies: *id007
+      Capabilities: *id008
+    Consortiums:
+      SampleConsortium:
+        Organizations:
+        - *id006
+  OrgsChannel:
+    Consortium: SampleConsortium
+    Application:
+      Organizations:
+      - *id006
+      Policies: *id009
+      Capabilities: *id010
