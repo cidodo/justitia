@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.identity.dao.format;
 
 import org.hyperledger.justitia.dao.bean.Ca;
-import org.hyperledger.justitia.identity.service.beans.crypto.CaInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.CaInfo;
 
 public class CaFormater {
 

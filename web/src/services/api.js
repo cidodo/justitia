@@ -15,7 +15,7 @@ export async function getInitConfig() {
 }
 
 export async function getConfigPeer() { //*
-  return request(prefix + "/node/peer", {
+  return request(prefix + "/read/peer", {
     method: "GET",
     headers: {
       Authorization: localStorage.getItem("token")
@@ -25,7 +25,7 @@ export async function getConfigPeer() { //*
 
 
 export async function getConfigOrderer() { //*
-  return request(prefix + "/node/orderer", {
+  return request(prefix + "/read/orderer", {
     method: "GET",
     headers: {
       Authorization: localStorage.getItem("token")
@@ -72,7 +72,7 @@ export async function peerDelete(params) { //*
 }
 
 export async function peerDeploy(params) { //*
-  return request(prefix + "/node/peer", {
+  return request(prefix + "/read/peer", {
     method: "POST",
     body: params,
     headers: {
@@ -82,7 +82,7 @@ export async function peerDeploy(params) { //*
 }
 
 export async function ordererDeploy(params) { //*
-  return request(prefix + "/node/orderer", {
+  return request(prefix + "/read/orderer", {
     method: "POST",
     body: params,
     headers: {

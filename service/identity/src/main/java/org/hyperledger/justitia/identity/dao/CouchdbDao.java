@@ -4,7 +4,7 @@ import org.hyperledger.justitia.dao.bean.Couchdb;
 import org.hyperledger.justitia.dao.mapper.CouchdbMapper;
 import org.hyperledger.justitia.identity.dao.format.CouchdbFormater;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.identity.service.beans.CouchdbInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.CouchdbInfo;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 

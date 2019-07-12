@@ -18,7 +18,7 @@ public class CouchdbController {
 //        return new Response().success(couchdbs);
 //    }
 //
-//    //---------------------------------------------------- node manage -------------------------------------------------
+//    //---------------------------------------------------- read manage -------------------------------------------------
 ////    @PostMapping()
 //    public Response createCouchdb(@RequestBody @Valid CreateCouchdbEntity body, HttpServletRequest request) {
 //        String requester = tokenManager.getRequester(request).getUserId();

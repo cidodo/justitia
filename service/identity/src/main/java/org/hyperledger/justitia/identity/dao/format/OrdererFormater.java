@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.identity.dao.format;
 
 import org.hyperledger.justitia.dao.bean.Orderer;
-import org.hyperledger.justitia.identity.service.beans.OrdererInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.OrdererInfo;
 
 import java.util.ArrayList;
 import java.util.List;

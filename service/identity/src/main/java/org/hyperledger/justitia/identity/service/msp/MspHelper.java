@@ -4,15 +4,15 @@ import org.hyperledger.justitia.common.utils.StringUtils;
 import org.hyperledger.justitia.common.utils.file.file.FileUtils;
 import org.hyperledger.justitia.identity.exception.MspException;
 import org.hyperledger.justitia.identity.service.CertFileHelper;
-import org.hyperledger.justitia.identity.service.beans.NodeInfo;
-import org.hyperledger.justitia.identity.service.beans.OrganizationInfo;
-import org.hyperledger.justitia.identity.service.beans.FabricUserInfo;
-import org.hyperledger.justitia.identity.service.beans.crypto.MspInfo;
-import org.hyperledger.justitia.identity.service.beans.crypto.NodeCrypto;
-import org.hyperledger.justitia.identity.service.beans.crypto.OrganizationCrypto;
-import org.hyperledger.justitia.identity.service.beans.crypto.TlsInfo;
-import org.hyperledger.justitia.identity.service.read.NodeReader;
-import org.hyperledger.justitia.identity.service.read.OrganizationReader;
+import org.hyperledger.justitia.common.face.modules.identity.beans.NodeInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.FabricUserInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.MspInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.NodeCrypto;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.OrganizationCrypto;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.TlsInfo;
+import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
+import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +91,7 @@ public class MspHelper {
         } else if (NodeInfo.NodeType.ORDERER == nodeType){
             nodeInfo = nodeReader.getOrdererInfoWithCrypto(nodeId);
         } else {
-            throw new MspException(String.format("Illegal node type %s.", nodeType.getOper()));
+            throw new MspException(String.format("Illegal read type %s.", nodeType.getOper()));
         }
 
         if (null == nodeInfo) {
@@ -100,7 +100,7 @@ public class MspHelper {
 
         NodeCrypto crypto = nodeInfo.getCrypto();
         if (null == crypto) {
-            throw new MspException(String.format("Crypto information is null when node id is %s and type is  %s.", nodeId, nodeType.getOper()));
+            throw new MspException(String.format("Crypto information is null when read id is %s and type is  %s.", nodeId, nodeType.getOper()));
         }
 
         //msp

@@ -1,5 +1,7 @@
 package org.hyperledger.justitia.farbic.data;
 
+import org.hyperledger.justitia.common.face.modules.fabric.ChainDataService;
+import org.hyperledger.justitia.common.face.modules.fabric.bean.ChannelMember;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,12 +26,12 @@ public class ChainDataServiceImpl implements ChainDataService {
     }
 
     @Override
-    public Map<String, List<OrganizationInfo>> getChannelRefOrg() {
+    public Map<String, List<ChannelMember>> getChannelRefOrg() {
         return ChannelRefOrganization.getChannelRefOrg();
     }
 
     @Override
-    public List<OrganizationInfo> getOrganizations(String channelId) {
+    public List<ChannelMember> getOrganizations(String channelId) {
         return ChannelRefOrganization.getOrganizations(channelId);
     }
 

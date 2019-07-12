@@ -8,14 +8,20 @@ import java.io.File;
 
 @Service("ExternalResources")
 public class ExternalResources implements InitializingBean {
-    @Value("${external.fabric-ca-server}")
+
+    private static String TEMP = "resource.temp";
+    private static String FABRIC_CONFIG = "resource.fabric.config";
+    @Value("${external-resources.temp}")
+    private String temp_temp;
+
+
+    @Value("${external-resources.fabric-ca-server}")
     private String fabricCaServer_temp;
 
     @Value("${external.resources.crypto}")
     private String crypto_temp;
 
-    @Value("${external.resources.temp}")
-    private String temp_temp;
+
 
     @Value("${external.resources.fabricca}")
     private String fabricca_temp;
@@ -36,7 +42,7 @@ public class ExternalResources implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        String userDir = System.getProperty("user.dir");
+        String userDir = System.getProperty("user.dir") + File.separator;
         fabricCaServer = userDir + fabricCaServer_temp.replace("/", File.separator);
         crypto = userDir + crypto_temp.replace("/", File.separator);
         temp = userDir + temp_temp.replace("/", File.separator);

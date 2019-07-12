@@ -1,15 +1,14 @@
 package org.hyperledger.justitia.scheduler.controller.chaincode;
 
-import org.hyperledger.justitia.chaincode.service.ChaincodeManageService;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.chaincode.beans.InstallChaincode;
 import org.hyperledger.justitia.scheduler.controller.chaincode.beans.InstantiateChaincode;
+import org.hyperledger.justitia.scheduler.service.proxy.chaincode.ChaincodeManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.InputStream;
 
 @RestController
 @RequestMapping("/chaincode")

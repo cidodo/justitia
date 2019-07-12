@@ -63,7 +63,7 @@ public class ChaincodeListener {
 //
 //            if (!registeredChannels.containsKey(channelId)) {
 //                if (peersId == null || peersId.isEmpty()) {
-//                    throw new Exception("No Peer node can register to listen");
+//                    throw new Exception("No Peer read can register to listen");
 //                }
 //                Set<String> installedChaincodePeers = new HashSet<>();
 //                for (String peerName : peersName) {

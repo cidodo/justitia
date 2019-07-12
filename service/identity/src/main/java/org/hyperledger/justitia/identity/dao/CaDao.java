@@ -3,7 +3,7 @@ package org.hyperledger.justitia.identity.dao;
 import org.hyperledger.justitia.dao.bean.Ca;
 import org.hyperledger.justitia.dao.mapper.CaMapper;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.identity.service.beans.crypto.CaInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.CaInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;

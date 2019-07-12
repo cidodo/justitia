@@ -14,13 +14,13 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: org.hyperledger.justitia.dao.entity
 external-resources:
-  temp: /resources/temp/
+  temp: resources/temp/
   fabric:
-    config: /resources/fabric/config/config.properties
+    config: resources/fabric/config/config.properties
     tools:
-      configtxgen: /resources/fabric/tools/configtxgen/
-      configtxlator: /resources/fabric/tools/configtxlator/
-      cryptogen: /resources/fabric/tools/cryptogen/
+      configtxgen: resources/fabric/tools/configtxgen/
+      configtxlator: resources/fabric/tools/configtxlator/
+      cryptogen: resources/fabric/tools/cryptogen/
 fabric:
   channel:
     manage:

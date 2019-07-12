@@ -8,15 +8,15 @@ import org.hyperledger.fabric.sdk.helper.Config;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.hyperledger.justitia.common.utils.StringUtils;
 import org.hyperledger.justitia.farbic.exception.HFClientContextException;
-import org.hyperledger.justitia.identity.service.beans.NodeInfo;
-import org.hyperledger.justitia.identity.service.beans.OrdererInfo;
-import org.hyperledger.justitia.identity.service.beans.PeerInfo;
-import org.hyperledger.justitia.identity.service.beans.FabricUserInfo;
-import org.hyperledger.justitia.identity.service.beans.crypto.MspInfo;
-import org.hyperledger.justitia.identity.service.beans.crypto.TlsInfo;
-import org.hyperledger.justitia.identity.service.read.NodeReader;
-import org.hyperledger.justitia.identity.service.read.OrganizationReader;
-import org.hyperledger.justitia.identity.service.read.UserReader;
+import org.hyperledger.justitia.common.face.modules.identity.beans.NodeInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.OrdererInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.PeerInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.FabricUserInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.MspInfo;
+import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.TlsInfo;
+import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
+import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
+import org.hyperledger.justitia.common.face.modules.identity.read.UserReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +71,7 @@ public class HFClientHelper {
             throw new HFClientContextException("Does not exist in the admin user.");
         }
 
-        FabricUserImpl fabricUser = new FabricUserImpl(adminUserInfo.getId(), mspId);
+        FabricUser fabricUser = new FabricUser(adminUserInfo.getId(), mspId);
         fabricUser.setMspId(mspId);
         try {
             MspInfo msp = adminUserInfo.getCrypto().getMspInfo();
@@ -133,7 +133,7 @@ public class HFClientHelper {
     public Orderer createOrderer() {
         List<Orderer> orderers = createOrderers();
         if (orderers == null || orderers.isEmpty()) {
-            LOGGER.warn("Not found any orderer node information.");
+            LOGGER.warn("Not found any orderer read information.");
             return null;
         }
         return orderers.get(0);

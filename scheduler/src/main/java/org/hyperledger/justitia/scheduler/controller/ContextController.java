@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller;
 
-import org.hyperledger.justitia.identity.service.beans.OrganizationInfo;
-import org.hyperledger.justitia.identity.service.read.OrganizationReader;
+import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
+import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

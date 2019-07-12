@@ -1,9 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.channel;
 
-import org.hyperledger.justitia.channel.service.ChannelTaskService;
-import org.hyperledger.justitia.channel.service.beans.TaskInfo;
-import org.hyperledger.justitia.channel.service.beans.TaskSummary;
-import org.hyperledger.justitia.channel.service.impl.ChannelTaskServiceImpl;
+import org.hyperledger.justitia.common.face.modules.channel.ChannelTaskService;
+import org.hyperledger.justitia.common.face.modules.channel.beans.TaskInfo;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.channel.beans.ResponseTaskBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +25,9 @@ public class ChannelTaskController {
      * 获取全部待处理任务
      */
     @GetMapping("/task")
-    public ResponseBean<List<TaskSummary>> getChannelConfigTask() {
-        List<TaskSummary> tasks = taskService.getTasks();
-        return new ResponseBean<List<TaskSummary>>().success(tasks);
+    public ResponseBean<List<TaskInfo>> getChannelConfigTask() {
+        List<TaskInfo> tasks = taskService.getTasks();
+        return new ResponseBean<List<TaskInfo>>().success(tasks);
     }
 
     /**

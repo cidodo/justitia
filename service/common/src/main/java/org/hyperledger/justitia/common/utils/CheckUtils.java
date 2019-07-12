@@ -5,25 +5,25 @@ import org.springframework.context.MessageSource;
 public class CheckUtils {
     private static MessageSource resources;
 
-    public static void check(boolean condition, String msgKey, Object... args) {
+    public static void check(boolean condition, String errorMsg) {
         if (!condition) {
-            fail(msgKey, args);
+            fail(errorMsg);
         }
     }
 
-    public static void notEmpty(String str, String msgKey, Object... args) {
+    public static void notEmpty(String str, String errorMsg) {
         if (str == null || str.isEmpty()) {
-            fail(msgKey, args);
+            fail(errorMsg);
         }
     }
 
-    public static void notNull(Object obj, String msgKey, Object... args) {
+    public static void notNull(Object obj, String errorMsg) {
         if (obj == null) {
-            fail(msgKey, args);
+            fail(errorMsg);
         }
     }
 
-    private static void fail(String msgKey, Object... args) {
-//        throw new CheckException(resources.getMessage(msgKey, args, UserUtil.getLocale()));
+    private static void fail(String errorMsg) {
+        throw new IllegalArgumentException(errorMsg);
     }
 }

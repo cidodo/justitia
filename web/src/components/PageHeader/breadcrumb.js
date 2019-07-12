@@ -151,7 +151,7 @@ export default class BreadcrumbView extends PureComponent {
   };
 
   // 渲染Breadcrumb 子节点
-  // Render the Breadcrumb child node
+  // Render the Breadcrumb child read
   itemRender = (route, params, routes, paths) => {
     const { linkElement = 'a' } = this.props;
     const last = routes.indexOf(route) === routes.length - 1;

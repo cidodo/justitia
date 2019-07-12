@@ -20,11 +20,6 @@
             <groupId>org.hyperledger.justitia</groupId>
             <artifactId>dao</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.hyperledger.fabric-sdk-java</groupId>
-            <artifactId>fabric-sdk-java</artifactId>
-        </dependency>
     </dependencies>
 
 </project>

@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.scheduler.service.bdc;
 
-import org.hyperledger.justitia.channel.service.ChannelManageService;
+import org.hyperledger.justitia.common.face.modules.channel.ChannelManageService;
 import org.hyperledger.justitia.common.ExternalResources;
 import org.hyperledger.justitia.common.exception.ServiceException;
 import org.hyperledger.justitia.common.utils.file.file.FileUtils;

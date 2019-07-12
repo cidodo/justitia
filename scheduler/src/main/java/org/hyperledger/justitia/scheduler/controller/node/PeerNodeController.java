@@ -1,11 +1,10 @@
 package org.hyperledger.justitia.scheduler.controller.node;
 
-import org.hyperledger.justitia.node.service.PeerService;
+import org.hyperledger.justitia.common.face.modules.node.PeerService;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.node.bean.CreatePeerBean;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.SetNodeBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

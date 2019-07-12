@@ -114,7 +114,7 @@ public class MemberManageChaincodeListener implements InitializingBean {
 //            if (!registeredChannels.containsKey(channelId)) {
 //                Set<String> peersName = Context.getPeersName(channelId);
 //                if (peersName.isEmpty()) {
-//                    throw new Exception("No Peer node can register to listen");
+//                    throw new Exception("No Peer read can register to listen");
 //                }
 //                Set<String> installedChaincodePeers = new HashSet<>();
 //                for (String peerName : peersName) {

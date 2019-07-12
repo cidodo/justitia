@@ -8,10 +8,11 @@ import org.hyperledger.fabric.protos.peer.Configuration;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
+import org.hyperledger.justitia.common.face.modules.fabric.bean.ChannelMember;
 import org.hyperledger.justitia.farbic.exception.HFClientContextException;
 import org.hyperledger.justitia.farbic.sdk.ChannelManager;
-import org.hyperledger.justitia.identity.service.beans.PeerInfo;
-import org.hyperledger.justitia.identity.service.read.NodeReader;
+import org.hyperledger.justitia.common.face.modules.identity.beans.PeerInfo;
+import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -66,7 +67,7 @@ public class SyncData4Chain implements InitializingBean {
         try {
             Map<String, Set<String>> peerRefChannel = syncPeerRefChannel();
             PeerRefChannel.setPeerRefChannel(peerRefChannel);
-            Map<String, List<OrganizationInfo>> channelRefOrg = syncChannelRefOrg();
+            Map<String, List<ChannelMember>> channelRefOrg = syncChannelRefOrg();
             ChannelRefOrganization.setChannelRefOrg(channelRefOrg);
         } catch (Exception e) {
             LOGGER.warn("Synchronize data from chain failed.", e);
@@ -96,8 +97,8 @@ public class SyncData4Chain implements InitializingBean {
         return peerRefChannel;
     }
 
-    private Map<String, List<OrganizationInfo>> syncChannelRefOrg() {
-        Map<String, List<OrganizationInfo>> channelRefOrg = new ConcurrentHashMap<>();
+    private Map<String, List<ChannelMember>> syncChannelRefOrg() {
+        Map<String, List<ChannelMember>> channelRefOrg = new ConcurrentHashMap<>();
         Set<String> channelsId = PeerRefChannel.getAllChannelsId();
         if (null != channelsId && !channelsId.isEmpty()) {
             for (String channelId : channelsId) {
@@ -113,7 +114,7 @@ public class SyncData4Chain implements InitializingBean {
                     continue;
                 }
 
-                List<OrganizationInfo> organizationsInfo = new ArrayList<>();
+                List<ChannelMember> organizationsInfo = new ArrayList<>();
                 Configtx.ConfigGroup application = config.getChannelGroup().getGroupsMap().get("Application");
                 Map<String, Configtx.ConfigGroup> groupsMap = application.getGroupsMap();
                 for (Map.Entry<String, Configtx.ConfigGroup> group : groupsMap.entrySet()) {
@@ -149,7 +150,7 @@ public class SyncData4Chain implements InitializingBean {
                     } catch (InvalidProtocolBufferException e) {
                         LOGGER.warn("MSP configuration parsing failed.", e);
                     }
-                    organizationsInfo.add(new OrganizationInfo(organizationName, mspId,  anchorPeersStr));
+                    organizationsInfo.add(new ChannelMember(organizationName, mspId,  anchorPeersStr));
                 }
                 channelRefOrg.put(channelId, organizationsInfo);
             }

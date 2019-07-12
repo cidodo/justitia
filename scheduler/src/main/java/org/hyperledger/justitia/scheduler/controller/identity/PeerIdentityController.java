@@ -1,8 +1,8 @@
 package org.hyperledger.justitia.scheduler.controller.identity;
 
-import org.hyperledger.justitia.identity.service.beans.PeerInfo;
-import org.hyperledger.justitia.identity.service.read.NodeReader;
-import org.hyperledger.justitia.identity.service.write.NodeWriter;
+import org.hyperledger.justitia.common.face.modules.identity.beans.PeerInfo;
+import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
+import org.hyperledger.justitia.common.face.modules.identity.write.NodeWriter;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.SetPeerBean;
 import org.hyperledger.justitia.scheduler.controller.identity.format.FormatData;

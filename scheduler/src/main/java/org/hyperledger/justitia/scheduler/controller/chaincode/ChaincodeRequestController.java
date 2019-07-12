@@ -1,9 +1,9 @@
 package org.hyperledger.justitia.scheduler.controller.chaincode;
 
 
-import org.hyperledger.justitia.chaincode.service.ChaincodeRequestService;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.chaincode.beans.InvokeChaincode;
+import org.hyperledger.justitia.scheduler.service.proxy.chaincode.ChaincodeRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -9,9 +9,9 @@ import org.hyperledger.justitia.common.utils.StringUtils;
 import org.hyperledger.justitia.farbic.utils.ssh.CallLocalShell;
 import org.hyperledger.justitia.farbic.utils.ssh.CallShell;
 import org.hyperledger.justitia.identity.exception.MspException;
-import org.hyperledger.justitia.identity.service.beans.OrganizationInfo;
-import org.hyperledger.justitia.identity.service.msp.MspService;
-import org.hyperledger.justitia.identity.service.read.OrganizationReader;
+import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
+import org.hyperledger.justitia.common.face.modules.identity.msp.MspService;
+import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
