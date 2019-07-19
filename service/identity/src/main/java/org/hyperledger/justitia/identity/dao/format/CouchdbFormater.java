@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.identity.dao.format;
 
 import org.hyperledger.justitia.dao.bean.Couchdb;
-import org.hyperledger.justitia.common.face.modules.identity.beans.CouchdbInfo;
+import org.hyperledger.justitia.service.face.identity.bean.CouchdbInfo;
 
 public class CouchdbFormater {
     public static CouchdbInfo couchdb2CouchdbInfo(Couchdb couchdb) {

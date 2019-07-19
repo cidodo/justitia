@@ -2,17 +2,12 @@ package org.hyperledger.justitia.channel.service;
 
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
-import org.hyperledger.justitia.channel.exception.ChannelManageException;
-import org.hyperledger.justitia.common.face.modules.channel.ChannelManageService;
-import org.hyperledger.justitia.common.face.modules.channel.beans.ChannelInfo;
+import org.hyperledger.justitia.channel.exception.ChannelServiceException;
+import org.hyperledger.justitia.service.face.channel.ChannelManageService;
+import org.hyperledger.justitia.service.face.channel.bean.ChannelInfo;
 import org.hyperledger.justitia.channel.service.member.MemberManager;
-import org.hyperledger.justitia.common.face.modules.fabric.ChainDataService;
-import org.hyperledger.justitia.common.face.modules.fabric.bean.ChannelMember;
-import org.hyperledger.justitia.farbic.data.SyncData4Chain;
-import org.hyperledger.justitia.farbic.exception.FabricToolsException;
-import org.hyperledger.justitia.farbic.exception.HFClientContextException;
-import org.hyperledger.justitia.farbic.sdk.ChannelManager;
-import org.hyperledger.justitia.farbic.tools.ConfigTxGen;
+import org.hyperledger.justitia.service.face.fabric.NetworkService;
+import org.hyperledger.justitia.service.face.fabric.bean.ChannelMember;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +23,11 @@ public class ChannelManageServiceImpl implements ChannelManageService {
     private final ConfigTxGen configtxgen;
     private final ChannelManager channelManager;
     private final MemberManager memberManager;
-    private final ChainDataService chainDataService;
+    private final NetworkService chainDataService;
     private final SyncData4Chain syncData4Chain;
 
     @Autowired
-    public ChannelManageServiceImpl(ConfigTxGen configtxgen, ChannelManager channelManager, MemberManager memberManager, ChainDataService chainDataService, SyncData4Chain syncData4Chain) {
+    public ChannelManageServiceImpl(ConfigTxGen configtxgen, ChannelManager channelManager, MemberManager memberManager, NetworkService chainDataService, SyncData4Chain syncData4Chain) {
         this.configtxgen = configtxgen;
         this.channelManager = channelManager;
         this.memberManager = memberManager;
@@ -46,23 +41,23 @@ public class ChannelManageServiceImpl implements ChannelManageService {
         try {
             createChannelTx = configtxgen.createChannelTx(channelId, consortium);
         } catch (FabricToolsException e) {
-            throw new ChannelManageException("生成创建通道交易失败。", e);
-//            throw new ChannelManageException("Generate create channel transaction failed.", e);
+            throw new ChannelServiceException("生成创建通道交易失败。", e);
+//            throw new ChannelServiceException("Generate create channel transaction failed.", e);
         }
 
         byte[] signature;
         try {
             signature = channelManager.getChannelConfigurationSignature(createChannelTx);
         } catch (HFClientContextException | InvalidArgumentException e) {
-            throw new ChannelManageException("创建通道交易签名失败。", e);
-//            throw new ChannelManageException("Create channel transaction signature failed.", e);
+            throw new ChannelServiceException("创建通道交易签名失败。", e);
+//            throw new ChannelServiceException("Create channel transaction signature failed.", e);
         }
 
         try {
             channelManager.createChannel(channelId, createChannelTx, signature);
         } catch (InvalidArgumentException | HFClientContextException | TransactionException e) {
-            throw new ChannelManageException("通道创建失败。", e);
-//            throw new ChannelManageException("Create channel failed.", e);
+            throw new ChannelServiceException("通道创建失败。", e);
+//            throw new ChannelServiceException("Create channel failed.", e);
         }
 
         if (null != peersId && !peersId.isEmpty()) {
@@ -73,8 +68,8 @@ public class ChannelManageServiceImpl implements ChannelManageService {
     @Override
     public void peerJoinChannel(String channelId, Collection<String> peersId) {
         if (null == peersId || peersId.isEmpty()) {
-            throw new ChannelManageException("Peer参数为空，无法完成加入通道操作。");
-//            throw new ChannelManageException("Peers is empty, no peer will be added to the channel.");
+            throw new ChannelServiceException("Peer参数为空，无法完成加入通道操作。");
+//            throw new ChannelServiceException("Peers is empty, no peer will be added to the channel.");
         }
         ArrayList<String> failedPeers = new ArrayList<>();
         try {
@@ -93,14 +88,14 @@ public class ChannelManageServiceImpl implements ChannelManageService {
         if (null != failedPeers && !failedPeers.isEmpty()) {
             String msg = String.format("节点 %s 加入通道%s失败。", Arrays.toString(failedPeers.toArray()), channelId);
 //            String msg = String.format("Node %s failed to join channel %s.", Arrays.toString(failedPeers.toArray()), channelId);
-            throw new ChannelManageException(msg);
+            throw new ChannelServiceException(msg);
         }
     }
 
     @Override
     public List<ChannelInfo> getChannelsInfo() {
         List<ChannelInfo> channelsInfo = new ArrayList<>();
-        Set<String> channelsId = chainDataService.getAllChannelsId();
+        Set<String> channelsId = chainDataService.getChannelsId();
         if (null != channelsId && !channelsId.isEmpty()) {
             for (String channelId : channelsId) {
                 ChannelInfo channelInfo = getChannelInfo(channelId);
@@ -124,7 +119,7 @@ public class ChannelManageServiceImpl implements ChannelManageService {
                 channelInfo.addPeer(peerId);
             }
         }
-        List<ChannelMember> organizations = chainDataService.getOrganizations(channelId);
+        List<ChannelMember> organizations = chainDataService.getChannelMembers(channelId);
         if (null != organizations) {
             for (ChannelMember organization : organizations) {
                 ChannelInfo.Member orgInfo = new ChannelInfo.Member(organization.getName(), organization.getMspId(), organization.getAnchorPeers());
@@ -140,7 +135,7 @@ public class ChannelManageServiceImpl implements ChannelManageService {
             return null;
         }
         List<String> mspsId = new ArrayList<>();
-        List<ChannelMember> organizations = chainDataService.getOrganizations(channelId);
+        List<ChannelMember> organizations = chainDataService.getChannelMembers(channelId);
         if (null != organizations) {
             for (ChannelMember organization : organizations) {
                 mspsId.add(organization.getMspId());
@@ -156,7 +151,7 @@ public class ChannelManageServiceImpl implements ChannelManageService {
         } catch (FabricToolsException e) {
             String msg = "生成组织配置失败。";
 //            String msg = "Organization configuration generation failed.";
-            throw new ChannelManageException(msg, e);
+            throw new ChannelServiceException(msg, e);
         }
     }
 
@@ -176,7 +171,7 @@ public class ChannelManageServiceImpl implements ChannelManageService {
 
     @Override
     public void addAnchorPeer() {
-        //TODO 增加锚节点，参考fabric-sdk-java的UpdateChannelIT.java(266行左右)
+        //TODO 增加锚节点，参考fabric-service-java的UpdateChannelIT.java(266行左右)
     }
 
     @Override

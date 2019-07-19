@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.channel;
 
-import org.hyperledger.justitia.common.face.modules.channel.ChannelTaskService;
-import org.hyperledger.justitia.common.face.modules.channel.beans.TaskInfo;
+import org.hyperledger.justitia.service.face.channel.ChannelTaskService;
+import org.hyperledger.justitia.service.face.channel.bean.TaskInfo;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.channel.beans.ResponseTaskBean;
 import org.springframework.beans.factory.annotation.Autowired;

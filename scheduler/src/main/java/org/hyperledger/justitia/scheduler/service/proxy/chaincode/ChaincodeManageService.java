@@ -1,16 +1,16 @@
 package org.hyperledger.justitia.scheduler.service.proxy.chaincode;
 
 import org.hyperledger.fabric.sdk.ProposalResponse;
-import org.hyperledger.justitia.common.face.modules.chaincode.bean.TransactionRequestBean;
+import org.hyperledger.justitia.service.face.chaincode.bean.TransactionRequestBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ChaincodeManageService implements org.hyperledger.justitia.common.face.modules.chaincode.ChaincodeManageService {
-    private final org.hyperledger.justitia.common.face.modules.chaincode.ChaincodeManageService chaincodeManageService;
+public class ChaincodeManageService implements org.hyperledger.justitia.service.face.chaincode.ChaincodeManageService {
+    private final org.hyperledger.justitia.service.face.chaincode.ChaincodeManageService chaincodeManageService;
 
     @Autowired
-    public ChaincodeManageService(org.hyperledger.justitia.common.face.modules.chaincode.ChaincodeManageService chaincodeManageService) {
+    public ChaincodeManageService(org.hyperledger.justitia.service.face.chaincode.ChaincodeManageService chaincodeManageService) {
         this.chaincodeManageService = chaincodeManageService;
     }
 

@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.hyperledger.fabric.protos.common.Configtx;
 import org.hyperledger.justitia.common.ExternalResources;
 import org.hyperledger.justitia.farbic.exception.FabricToolsException;
+import org.hyperledger.justitia.farbic.tools.helper.ComputeUpdate;
 import org.hyperledger.justitia.farbic.utils.ssh.CallLocalShell;
 import org.hyperledger.justitia.farbic.utils.ssh.CallShell;
 import org.slf4j.Logger;

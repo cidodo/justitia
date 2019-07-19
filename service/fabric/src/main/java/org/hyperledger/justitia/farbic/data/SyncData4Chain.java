@@ -5,14 +5,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import org.hyperledger.fabric.protos.common.Configtx;
 import org.hyperledger.fabric.protos.msp.MspConfig;
 import org.hyperledger.fabric.protos.peer.Configuration;
-import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
-import org.hyperledger.fabric.sdk.exception.ProposalException;
-import org.hyperledger.fabric.sdk.exception.TransactionException;
-import org.hyperledger.justitia.common.face.modules.fabric.bean.ChannelMember;
-import org.hyperledger.justitia.farbic.exception.HFClientContextException;
-import org.hyperledger.justitia.farbic.sdk.ChannelManager;
-import org.hyperledger.justitia.common.face.modules.identity.beans.PeerInfo;
-import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
+import org.hyperledger.justitia.service.face.fabric.ChannelService;
+import org.hyperledger.justitia.service.face.fabric.bean.ChannelMember;
+import org.hyperledger.justitia.service.face.identity.NodeService;
+import org.hyperledger.justitia.service.face.identity.bean.PeerInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -31,44 +27,44 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SyncData4Chain implements InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(SyncData4Chain.class);
-    private final NodeReader nodeReader;
-    private final ChannelManager channelManager;
+    private final ChannelService channelService;
+    private final NodeService nodeService;
 
-    private static Boolean syncing = false;
+    private static Boolean pause = false;
     private static final int SYNC_PERIOD = 5;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     @Autowired
-    public SyncData4Chain(NodeReader nodeReader, ChannelManager channelManager) {
-        this.nodeReader = nodeReader;
-        this.channelManager = channelManager;
+    public SyncData4Chain(ChannelService channelService, NodeService nodeService) {
+        this.channelService = channelService;
+        this.nodeService = nodeService;
     }
 
     @Override
     public void afterPropertiesSet() {
-        begin();
+        pause = false;
         executorService.scheduleAtFixedRate(() -> {
-            if (syncing) {
+            if (!pause) {
                 syncData();
             }
         }, 0, SYNC_PERIOD, TimeUnit.MINUTES);
     }
 
 
-    public void begin() {
-        syncing = true;
+    public void contuiteSync() {
+        pause = false;
     }
 
-    public void stop() {
-        syncing = false;
+    public void pauseSync() {
+        pause = true;
     }
 
     public void syncData() {
         try {
             Map<String, Set<String>> peerRefChannel = syncPeerRefChannel();
-            PeerRefChannel.setPeerRefChannel(peerRefChannel);
+            NetworkConfig.setPeerRefChannel(peerRefChannel);
             Map<String, List<ChannelMember>> channelRefOrg = syncChannelRefOrg();
-            ChannelRefOrganization.setChannelRefOrg(channelRefOrg);
+            NetworkConfig.setChannelRefOrg(channelRefOrg);
         } catch (Exception e) {
             LOGGER.warn("Synchronize data from chain failed.", e);
         }
@@ -77,18 +73,15 @@ public class SyncData4Chain implements InitializingBean {
 
     private Map<String, Set<String>> syncPeerRefChannel() {
         Map<String, Set<String>> peerRefChannel = new ConcurrentHashMap<>();
-        List<PeerInfo> peersInfo = nodeReader.getPeersInfo();
+        List<PeerInfo> peersInfo = nodeService.getPeersInfo();
         if (null != peersInfo && !peersInfo.isEmpty()) {
             for (PeerInfo peerInfo : peersInfo) {
                 String peerId = peerInfo.getId();
                 Set<String> channelsId;
                 try {
-                    channelsId = channelManager.queryChannels(peerId);
-                } catch (InvalidArgumentException | ProposalException e) {
+                    channelsId = channelService.queryChannels(peerId);
+                } catch (Exception e) {
                     LOGGER.warn("Get channel list failed.", e);
-                    continue;
-                } catch (HFClientContextException e) {
-                    LOGGER.debug("HFClient context exception.", e);
                     continue;
                 }
                 peerRefChannel.put(peerId, channelsId);
@@ -99,18 +92,15 @@ public class SyncData4Chain implements InitializingBean {
 
     private Map<String, List<ChannelMember>> syncChannelRefOrg() {
         Map<String, List<ChannelMember>> channelRefOrg = new ConcurrentHashMap<>();
-        Set<String> channelsId = PeerRefChannel.getAllChannelsId();
+        Set<String> channelsId = NetworkConfig.getChannelsId();
         if (null != channelsId && !channelsId.isEmpty()) {
             for (String channelId : channelsId) {
                 Configtx.Config config;
                 try {
-                    byte[] channelConfigBytes = channelManager.getChannelConfigurationBytes(channelId);
+                    byte[] channelConfigBytes = channelService.getChannelConfigurationBytes(channelId);
                     config = Configtx.Config.parseFrom(channelConfigBytes);
-                } catch (TransactionException | InvalidProtocolBufferException | InvalidArgumentException e) {
+                } catch (Exception e) {
                     LOGGER.warn("get channel{} config failed.", channelId, e);
-                    continue;
-                } catch (HFClientContextException e) {
-                    LOGGER.debug("HFClient context exception.", e);
                     continue;
                 }
 

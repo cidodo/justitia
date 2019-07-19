@@ -13,7 +13,7 @@ spring:
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: org.hyperledger.justitia.dao.entity
-external-resources:
+external-config:
   temp: resources/temp/
   fabric:
     config: resources/fabric/config/config.properties

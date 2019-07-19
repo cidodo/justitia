@@ -1,7 +1,8 @@
 package org.hyperledger.justitia.scheduler.controller.identity.format;
 
+import org.hyperledger.justitia.service.face.identity.bean.*;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.*;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.*;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.*;
 import org.hyperledger.justitia.scheduler.exception.UploadFileException;
 import org.springframework.web.multipart.MultipartFile;

@@ -9,11 +9,10 @@ import org.hyperledger.justitia.common.utils.StringUtils;
 import org.hyperledger.justitia.farbic.utils.ssh.CallLocalShell;
 import org.hyperledger.justitia.farbic.utils.ssh.CallShell;
 import org.hyperledger.justitia.identity.exception.MspException;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
-import org.hyperledger.justitia.common.face.modules.identity.msp.MspService;
-import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
+import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
+import org.hyperledger.justitia.service.face.identity.msp.MspService;
+import org.hyperledger.justitia.service.face.identity.read.OrganizationReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -21,23 +20,37 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
 public class ConfigTxGen {
+    private final File configtxgen;
+    private final File config;
+
+    @Autowired
+    public ConfigTxGen(File configtxgen, File config) throws FabricToolsException {
+        if (!configtxgen.exists()) {
+            throw new FabricToolsException("");
+        }
+        this.configtxgen = configtxgen;
+
+        if (!config.exists()) {
+            throw new FabricToolsException("");
+        }
+        this.config = config;
+    }
+
+
     private static final String DEFAULT_ORDERER_ORG_NAME = "SampleOrg";
     private static final String CONFIG_TX_TEMPLATE_FILE = "configtx_template.yaml";
 
-
-    private final MspService mspService;
-    private final OrganizationReader organizationReader;
-
     @Autowired
-    public ConfigTxGen(MspService mspService, OrganizationReader organizationReader) {
+    public ConfigTxGen(MspService mspService, OrganizationReader organizationReader, File configtxgen, File config) {
+        this.configtxgen = configtxgen;
+        this.config = config;
         this.mspService = mspService;
         this.organizationReader = organizationReader;
     }
 
     //------------------------------------------------ genesis block ---------------------------------------------------
-    public File createGenesisBlock(String systemChainId, String consortium, ArrayList<String> ordererAddresses) throws FabricToolsException {
+    public File generateGenesisBlock(String systemChainId, String consortium, ArrayList<String> ordererAddresses) throws FabricToolsException {
         File genesisBlockFile = createOutputFile("genesis.block");
         String command = String.format("./configtxgen -profile OrdererGenesis -channelID %s -outputBlock %s", systemChainId, genesisBlockFile.getPath());
         CallShell.Result result = callConfigTxGen(command, consortium, ordererAddresses);
@@ -50,7 +63,7 @@ public class ConfigTxGen {
     }
 
     //---------------------------------------------- organization config -----------------------------------------------
-    public InputStream createOrgConfig() throws FabricToolsException {
+    public InputStream generateMemberConfig() throws FabricToolsException {
         String organizationName = organizationReader.getName();
         String command = String.format("./configtxgen -printOrg %s", organizationName);
         CallShell.Result result = callConfigTxGen(command, null, null);
@@ -62,7 +75,7 @@ public class ConfigTxGen {
     }
 
     //--------------------------------------------- create channel tx --------------------------------------------------
-    public byte[] createChannelTx(String channelId, String consortium) throws FabricToolsException {
+    public byte[] generateCreateChannelTx(String channelId, String consortium) throws FabricToolsException {
         File outputFile = createOutputFile("channel.tx");
         try {
             String command;
@@ -95,7 +108,7 @@ public class ConfigTxGen {
         String output = ExternalResources.getUniqueTempDir() + File.separator + fileName;
         File outputFile = new File(output);
         try {
-            FileUtils.makeDir(outputFile.getParent());
+            FileUtils.makeDirectory(outputFile.getParent());
             if (!outputFile.createNewFile()) {
                 String msg = String.format("Configtxgen output file %s create failed.", output);
                 throw new FabricToolsException(msg);
@@ -113,7 +126,7 @@ public class ConfigTxGen {
         String tempDir = ExternalResources.getUniqueTempDir();
         String mspDir;
         try {
-            mspDir = mspService.generateOrgMsp(tempDir, organizationInfo.getId()).getPath();
+            mspDir = mspService.getOrganizationMSP(tempDir, organizationInfo.getId()).getPath();
         } catch (IOException | MspException e) {
             throw new FabricToolsException("Organization msp folder generate failed", e);
         }

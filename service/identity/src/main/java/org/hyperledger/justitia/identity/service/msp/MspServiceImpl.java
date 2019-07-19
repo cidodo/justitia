@@ -1,9 +1,8 @@
 package org.hyperledger.justitia.identity.service.msp;
 
 import org.hyperledger.justitia.identity.exception.MspException;
-import org.hyperledger.justitia.common.face.modules.identity.beans.NodeInfo;
-import org.hyperledger.justitia.identity.service.msp.MspHelper;
-import org.hyperledger.justitia.common.face.modules.identity.msp.MspService;
+import org.hyperledger.justitia.service.face.identity.bean.NodeInfo;
+import org.hyperledger.justitia.service.face.identity.msp.MspService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +21,12 @@ public class MspServiceImpl implements MspService{
     }
 
     @Override
-    public File generateOrgMsp(String saveDir, String organizationId) throws IOException, MspException {
+    public File getOrganizationMSP(String saveDir, String organizationId) throws IOException, MspException {
         return new File(mspHelper.generateOrgMsp(saveDir, organizationId));
     }
 
     @Override
-    public File generateNodeMsp(String saveDir, String nodeId, NodeInfo.NodeType nodeType) throws IOException,
+    public File getNodeMSP(String saveDir, String nodeId, NodeInfo.NodeType nodeType) throws IOException,
             CertificateException, NoSuchAlgorithmException, MspException {
         return new File(mspHelper.generateNodeMsp(saveDir, nodeId, nodeType));
     }

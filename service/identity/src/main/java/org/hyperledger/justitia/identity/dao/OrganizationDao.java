@@ -4,10 +4,11 @@ import org.hyperledger.justitia.dao.bean.Organization;
 import org.hyperledger.justitia.dao.mapper.OrganizationMapper;
 import org.hyperledger.justitia.identity.dao.format.OrganizationFormater;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.CaInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.MspInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.OrganizationCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.CaInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.MspInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.OrganizationCrypto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ public class OrganizationDao {
     private final MspDao mspDao;
     private final CaDao caDao;
 
+    @Autowired
     public OrganizationDao(OrganizationMapper organizationMapper, MspDao mspDao, CaDao caDao) {
         this.organizationMapper = organizationMapper;
         this.mspDao = mspDao;
@@ -118,7 +120,12 @@ public class OrganizationDao {
     }
 
     @Transactional
-    public int deleteOrganization(String id) {
+    public int deleteOrganization() {
+        OrganizationInfo organizationBaseInfo = getOrganizationBaseInfo();
+        if (null == organizationBaseInfo) {
+            return 0;
+        }
+        String id = organizationBaseInfo.getId();
         mspDao.deleteMspById(generateMspId(id));
         caDao.deleteCa(generateCaId(id));
         caDao.deleteCa(generateTlsCaId(id));

@@ -15,12 +15,13 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      *
      * @param dirFile 被检查的文件路径
      */
-    public static void fileProber(File dirFile) {
+    static boolean fileProber(File dirFile) {
         File parentFile = dirFile.getParentFile();
         if (!parentFile.exists()) {
             fileProber(parentFile);
-            parentFile.mkdirs();
+            return parentFile.mkdirs();
         }
+        return true;
     }
 
     /**
@@ -28,12 +29,24 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
      *
      * @param dirPath 文件路径
      */
-    public static void makeDir(String dirPath) {
+    public static boolean makeDirectory(String dirPath) {
         File file = new File(dirPath);
         if (!file.exists()) {
             fileProber(file);
-            file.mkdirs();
+            return file.mkdirs();
         }
+        return true;
+    }
+
+    public static boolean createFile(File file) throws IOException {
+        if (file == null) {
+             throw new IllegalArgumentException("Unable to create new files, file is null.");
+        }
+        if (file.exists()) {
+            return true;
+        }
+        makeDirectory(file.getParent());
+        return file.createNewFile();
     }
 
 

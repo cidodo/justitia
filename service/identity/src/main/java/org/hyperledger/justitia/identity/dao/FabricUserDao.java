@@ -4,8 +4,8 @@ import org.hyperledger.justitia.dao.bean.FabricUser;
 import org.hyperledger.justitia.dao.mapper.FabricUserMapper;
 import org.hyperledger.justitia.identity.dao.format.FabricUserFormater;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.common.face.modules.identity.beans.FabricUserInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.UserCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.UserCrypto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class FabricUserDao {
         this.organizationDao = organizationDao;
     }
 
-    public int setUser(FabricUserInfo fabricUserInfo) {
+    public int insertUser(FabricUserInfo fabricUserInfo) {
         if (null == fabricUserInfo) {
             return  0;
         }
@@ -53,7 +53,7 @@ public class FabricUserDao {
         }
     }
 
-    public int updateUserInfo(FabricUserInfo fabricUserInfo) {
+    public int updateUser(FabricUserInfo fabricUserInfo) {
         if (null == fabricUserInfo) {
             return  0;
         }
@@ -84,29 +84,24 @@ public class FabricUserDao {
         return FabricUserFormater.fabricUser2UserInfo(adminUser);
     }
 
+    public FabricUserInfo getUser(String userId) {
+        FabricUser fabricUser = fabricUserMapper.selectByPrimaryKey(userId);
+        return FabricUserFormater.fabricUser2UserInfo(fabricUser);
+    }
+
+//    public FabricUserInfo getUser() {
+//        return null;
+//    }
+
     public List<FabricUserInfo> selectAdminsUser() {
         return null;
     }
 
-    public FabricUserInfo getAdminUser(String userId) {
+    public List<FabricUserInfo> selectUser() {
+//        List<FabricUser> fabricUsers = fabricUserMapper.();
+//        return FabricUserFormater.fabricUsers2FabricUsersInfo(fabricUsers);
         return null;
     }
-
-
-    public FabricUserInfo getMemberUser() {
-        return null;
-    }
-
-
-    public List<FabricUserInfo> selectMembersUser() {
-        return null;
-    }
-
-
-    public FabricUserInfo getMemberUser(String userId) {
-        return null;
-    }
-
 
     public List<FabricUserInfo> selectUsersBase() {
         List<FabricUser> fabricUsers = fabricUserMapper.selectUsersBase();

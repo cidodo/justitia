@@ -4,8 +4,8 @@ import org.hyperledger.justitia.dao.bean.Ca;
 import org.hyperledger.justitia.dao.bean.FabricUser;
 import org.hyperledger.justitia.dao.bean.Msp;
 import org.hyperledger.justitia.dao.bean.Organization;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.*;
+import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.*;
 
 import java.util.List;
 

@@ -1,6 +1,5 @@
 package org.hyperledger.justitia.scheduler.controller.aspect;
 
-import org.hyperledger.justitia.channel.exception.MemberManageException;
 import org.hyperledger.justitia.common.exception.ServiceException;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.exception.UploadFileException;

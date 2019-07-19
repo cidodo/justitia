@@ -11,15 +11,5 @@
 
     <artifactId>channel</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.hyperledger.justitia.service</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hyperledger.justitia.service</groupId>
-            <artifactId>fabric</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

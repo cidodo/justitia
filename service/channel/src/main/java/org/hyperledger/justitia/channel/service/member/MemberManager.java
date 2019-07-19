@@ -1,8 +1,7 @@
 package org.hyperledger.justitia.channel.service.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hyperledger.justitia.channel.exception.MemberManageException;
-import org.hyperledger.justitia.farbic.sdk.ChannelManager;
+import org.hyperledger.justitia.farbic.service.ChannelManager;
 import org.hyperledger.justitia.farbic.tools.ConfigTxLator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

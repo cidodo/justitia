@@ -6,10 +6,10 @@ import com.google.protobuf.ByteString;
 import org.hyperledger.fabric.protos.peer.FabricProposalResponse;
 import org.hyperledger.fabric.sdk.BlockEvent;
 import org.hyperledger.fabric.sdk.ProposalResponse;
-import org.hyperledger.justitia.channel.exception.MemberManageException;
 import org.hyperledger.justitia.common.utils.StringUtils;
-import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
-import org.hyperledger.justitia.farbic.sdk.ChaincodeRequester;
+import org.hyperledger.justitia.service.face.chaincode.ChaincodeRequestService;
+import org.hyperledger.justitia.service.face.chaincode.bean.TransactionRequestBean;
+import org.hyperledger.justitia.service.face.identity.read.OrganizationReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +27,7 @@ import java.util.concurrent.TimeoutException;
 @Component
 public class MemberManageChaincode {
     private static final Logger LOGGER = LoggerFactory.getLogger(MemberManageChaincode.class);
-    private final ChaincodeRequester chaincodeRequester;
-    private final OrganizationReader organizationReader;
+    private final ChaincodeRequestService chaincodeRequester;
 
     @Value("${fabric.channel.manage.chaincode}")
     private String memberManageChaincodeName;
@@ -37,8 +36,8 @@ public class MemberManageChaincode {
 
 
     @Autowired
-    public MemberManageChaincode(ChaincodeRequester chaincodeRequester, OrganizationReader organizationReader) {
-        this.chaincodeRequester = chaincodeRequester;
+    public MemberManageChaincode(ChaincodeRequestService chaincodeRequestService, OrganizationReader organizationReader) {
+        this.chaincodeRequester = chaincodeRequestService;
         this.organizationReader = organizationReader;
     }
 
@@ -213,7 +212,12 @@ public class MemberManageChaincode {
 
     private Collection<ProposalResponse> endorsement(String channelId, String function, ArrayList<String> args) throws MemberManageException {
         try {
-            return chaincodeRequester.invokeChaincode(channelId, memberManageChaincodeName, function, args);
+            TransactionRequestBean transactionRequestBean = new TransactionRequestBean();
+            transactionRequestBean.setChannelName(channelId);
+            transactionRequestBean.setFunction(function);
+            transactionRequestBean.setArgs(args);
+            transactionRequestBean.setChaincodeName(memberManageChaincodeName);
+            return chaincodeRequester.invoke(transactionRequestBean);
         } catch (Exception e) {
             String msg = String.format("Chaincode function %s of %s endorsement failed.", function, memberManageChaincodeName);
             LOGGER.error(msg, e);

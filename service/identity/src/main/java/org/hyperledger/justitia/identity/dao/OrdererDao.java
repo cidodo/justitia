@@ -4,8 +4,8 @@ import org.hyperledger.justitia.dao.bean.Orderer;
 import org.hyperledger.justitia.dao.mapper.OrdererMapper;
 import org.hyperledger.justitia.identity.dao.format.OrdererFormater;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrdererInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.NodeCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.OrdererInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.NodeCrypto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
@@ -23,7 +23,7 @@ public class OrdererDao {
         this.mspDao = mspDao;
     }
 
-    public int setOrderer(OrdererInfo ordererInfo) {
+    public int insertOrderer(OrdererInfo ordererInfo) {
         if (null == ordererInfo) {
             return 0;
         }
@@ -48,7 +48,7 @@ public class OrdererDao {
         }
     }
 
-    public int updateOrdererInfo(OrdererInfo ordererInfo) {
+    public int updateOrderer(OrdererInfo ordererInfo) {
         if (null == ordererInfo) {
             return 0;
         }
@@ -70,32 +70,32 @@ public class OrdererDao {
         return ordererMapper.deleteByPrimaryKey(id);
     }
 
-    public List<OrdererInfo> selectOrderersInfo() {
+    public List<OrdererInfo> selectOrderers() {
         List<Orderer> orderers = ordererMapper.selectOrderers();
         return OrdererFormater.orderers2OrderersInfo(orderers);
     }
 
-    public List<OrdererInfo> selectOrderersInfoWithTls() {
+    public List<OrdererInfo> selectOrderersWithTls() {
         List<Orderer> orderers = ordererMapper.selectOrderersWithTls();
         return OrdererFormater.orderers2OrderersInfo(orderers);
     }
 
-    public List<OrdererInfo> selectOrderersInfoWithCrypto() {
+    public List<OrdererInfo> selectOrderersWithCrypto() {
         List<Orderer> orderers = ordererMapper.selectOrderersWithCrypto();
         return OrdererFormater.orderers2OrderersInfo(orderers);
     }
 
-    public OrdererInfo getOrdererInfo(String id) {
+    public OrdererInfo getOrderer(String id) {
         Orderer orderer = ordererMapper.getOrderer(id);
         return OrdererFormater.orderer2OrdererInfo(orderer);
     }
 
-    public OrdererInfo getOrdererInfoWithTls(String id) {
+    public OrdererInfo getOrdererWithTls(String id) {
         Orderer orderer = ordererMapper.getOrdererWithTls(id);
         return OrdererFormater.orderer2OrdererInfo(orderer);
     }
 
-    public OrdererInfo getOrdererInfoWithCrypto(String id) {
+    public OrdererInfo getOrdererWithCrypto(String id) {
         Orderer orderer = ordererMapper.getOrdererWithCrypto(id);
         return OrdererFormater.orderer2OrdererInfo(orderer);
     }

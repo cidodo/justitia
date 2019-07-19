@@ -3,15 +3,10 @@ package org.hyperledger.justitia.channel.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.protobuf.InvalidProtocolBufferException;
 import org.hyperledger.fabric.protos.common.Configtx;
-import org.hyperledger.justitia.channel.exception.ConsortiumManageException;
-import org.hyperledger.justitia.common.face.modules.channel.ConsortiumManageService;
-import org.hyperledger.justitia.common.face.modules.channel.beans.ConsortiumInfo;
-import org.hyperledger.justitia.farbic.sdk.ChannelManager;
-import org.hyperledger.justitia.farbic.tools.ConfigTxLator;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrdererInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
-import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
-import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
+import org.hyperledger.justitia.service.face.channel.ConsortiumManageService;
+import org.hyperledger.justitia.service.face.channel.bean.ConsortiumInfo;
+import org.hyperledger.justitia.service.face.identity.bean.OrdererInfo;
+import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +17,6 @@ import java.util.*;
 @Service
 public class ConsortiumManageServiceImpl implements ConsortiumManageService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ConsortiumManageServiceImpl.class);
-    private final NodeReader nodeReader;
-    private final OrganizationReader organizationReader;
-    private final ChannelManager channelManager;
-    private final ConfigTxLator configtxlator;
 
     @Autowired
     public ConsortiumManageServiceImpl(NodeReader nodeReader, OrganizationReader organizationReader, ChannelManager channelManager, ConfigTxLator configtxlator) {

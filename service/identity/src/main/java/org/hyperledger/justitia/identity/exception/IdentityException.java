@@ -3,22 +3,26 @@ package org.hyperledger.justitia.identity.exception;
 import org.hyperledger.justitia.common.exception.ServiceException;
 
 public class IdentityException extends ServiceException {
-    public IdentityException() {
+
+
+    public IdentityException(int errorCode) {
+        super(errorCode);
     }
 
-    public IdentityException(String message) {
-        super(message);
+    public IdentityException(int errorCode, Object... args) {
+        super(errorCode, args);
     }
 
-    public IdentityException(String message, Throwable cause) {
-        super(message, cause);
+    public IdentityException(int errorCode, Throwable cause) {
+        super(errorCode, cause);
     }
 
-    public IdentityException(Throwable cause) {
-        super(cause);
+    public IdentityException(int errorCode, Throwable cause, Object... args) {
+        super(errorCode, cause, args);
     }
 
-    public IdentityException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
+    @Override
+    protected int getErrorType() {
+        return ServiceException.IDENTITY_SERVICE_ERROR;
     }
 }

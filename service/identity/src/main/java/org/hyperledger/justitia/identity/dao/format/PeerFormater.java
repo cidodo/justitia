@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.identity.dao.format;
 
 import org.hyperledger.justitia.dao.bean.Peer;
-import org.hyperledger.justitia.common.face.modules.identity.beans.PeerInfo;
+import org.hyperledger.justitia.service.face.identity.bean.PeerInfo;
 
 import java.util.ArrayList;
 import java.util.List;

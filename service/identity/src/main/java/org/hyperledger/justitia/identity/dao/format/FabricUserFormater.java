@@ -1,8 +1,8 @@
 package org.hyperledger.justitia.identity.dao.format;
 
 import org.hyperledger.justitia.dao.bean.FabricUser;
-import org.hyperledger.justitia.common.face.modules.identity.beans.FabricUserInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.UserCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.UserCrypto;
 
 import java.util.ArrayList;
 import java.util.List;

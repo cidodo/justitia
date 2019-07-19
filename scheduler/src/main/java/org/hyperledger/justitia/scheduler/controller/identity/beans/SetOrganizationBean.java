@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.identity.beans;
 
 import lombok.Data;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
+import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data

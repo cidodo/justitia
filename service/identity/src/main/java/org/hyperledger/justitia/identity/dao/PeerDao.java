@@ -4,9 +4,9 @@ import org.hyperledger.justitia.dao.bean.Peer;
 import org.hyperledger.justitia.dao.mapper.PeerMapper;
 import org.hyperledger.justitia.identity.dao.format.PeerFormater;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.common.face.modules.identity.beans.CouchdbInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.PeerInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.NodeCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.CouchdbInfo;
+import org.hyperledger.justitia.service.face.identity.bean.PeerInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.NodeCrypto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class PeerDao {
     }
 
     @Transactional
-    public int setPeer(PeerInfo peerInfo) {
+    public int insertPeer(PeerInfo peerInfo) {
         if (null == peerInfo) {
             return 0;
         }
@@ -64,7 +64,7 @@ public class PeerDao {
     }
 
     @Transactional
-    public int updatePeerInfo(PeerInfo peerInfo) {
+    public int updatePeer(PeerInfo peerInfo) {
         if (null == peerInfo) {
             return 0;
         }
@@ -95,32 +95,32 @@ public class PeerDao {
         return peerMapper.deleteByPrimaryKey(id);
     }
 
-    public List<PeerInfo> selectPeersInfo() {
+    public List<PeerInfo> selectPeers() {
         List<Peer> peers = peerMapper.selectPeers();
         return PeerFormater.peers2PeersInfo(peers);
     }
 
-    public List<PeerInfo> selectPeersInfoWithTls() {
+    public List<PeerInfo> selectPeersWithTls() {
         List<Peer> peers = peerMapper.selectPeersWithTls();
         return PeerFormater.peers2PeersInfo(peers);
     }
 
-    public List<PeerInfo> selectPeersInfoWithCrypto() {
+    public List<PeerInfo> selectPeersWithCrypto() {
         List<Peer> peers = peerMapper.selectPeersWithCrypto();
         return PeerFormater.peers2PeersInfo(peers);
     }
 
-    public PeerInfo getPeerInfo(String id) {
+    public PeerInfo getPeer(String id) {
         Peer peer = peerMapper.getPeer(id);
         return PeerFormater.peer2PeerInfo(peer);
     }
 
-    public PeerInfo getPeerInfoWithTls(String id) {
+    public PeerInfo getPeerWithTls(String id) {
         Peer peer = peerMapper.getPeerWithTls(id);
         return PeerFormater.peer2PeerInfo(peer);
     }
 
-    public PeerInfo getPeerInfoWithCrypto(String id) {
+    public PeerInfo getPeerWithCrypto(String id) {
         Peer peer = peerMapper.getPeerWithCrypto(id);
         return PeerFormater.peer2PeerInfo(peer);
     }

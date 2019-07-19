@@ -13,14 +13,6 @@
 
 
     <dependencies>
-        <dependency>
-            <groupId>org.hyperledger.justitia.service</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hyperledger.justitia.service</groupId>
-            <artifactId>identity</artifactId>
-        </dependency>
         <!-- shell -->
         <dependency>
             <groupId>com.jcraft</groupId>

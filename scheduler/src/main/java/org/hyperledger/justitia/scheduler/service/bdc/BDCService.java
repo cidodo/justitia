@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.scheduler.service.bdc;
 
-import org.hyperledger.justitia.common.face.modules.channel.ChannelManageService;
+import org.hyperledger.justitia.service.face.channel.ChannelManageService;
 import org.hyperledger.justitia.common.ExternalResources;
 import org.hyperledger.justitia.common.exception.ServiceException;
 import org.hyperledger.justitia.common.utils.file.file.FileUtils;
@@ -109,7 +109,7 @@ public class BDCService {
         YamlFileUtils yamlUtils = new YamlFileUtils();
         Map configMap;
         try {
-            configMap = yamlUtils.readYamlFileAsMap(config.getPath());
+            configMap = yamlUtils.readYamlFileAsMap(config);
         } catch (FileNotFoundException e) {
             String msg = String.format("Not found config template file %s.", config);
             throw new FabricToolsException(msg);

@@ -3,16 +3,15 @@ package org.hyperledger.justitia.identity.service.msp;
 import org.hyperledger.justitia.common.utils.StringUtils;
 import org.hyperledger.justitia.common.utils.file.file.FileUtils;
 import org.hyperledger.justitia.identity.exception.MspException;
-import org.hyperledger.justitia.identity.service.CertFileHelper;
-import org.hyperledger.justitia.common.face.modules.identity.beans.NodeInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.OrganizationInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.FabricUserInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.MspInfo;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.NodeCrypto;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.OrganizationCrypto;
-import org.hyperledger.justitia.common.face.modules.identity.beans.crypto.TlsInfo;
-import org.hyperledger.justitia.common.face.modules.identity.read.NodeReader;
-import org.hyperledger.justitia.common.face.modules.identity.read.OrganizationReader;
+import org.hyperledger.justitia.service.face.identity.bean.NodeInfo;
+import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
+import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.MspInfo;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.NodeCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.OrganizationCrypto;
+import org.hyperledger.justitia.service.face.identity.bean.crypto.TlsInfo;
+import org.hyperledger.justitia.service.face.identity.read.NodeReader;
+import org.hyperledger.justitia.service.face.identity.read.OrganizationReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +35,7 @@ public class MspHelper {
 
     public String generateOrgMsp(String saveDir, String organizationId) throws IOException, MspException {
         String mspDir = saveDir + File.separator + "msp";
-        FileUtils.makeDir(mspDir);
+        FileUtils.makeDirectory(mspDir);
         OrganizationInfo organizationInfoWithCryptoMsp = organizationReader.getOrganizationInfoWithCryptoMsp(organizationId);
         if (null == organizationInfoWithCryptoMsp) {
             throw new MspException(String.format("There is no organization with id %s.", organizationId));
@@ -105,7 +104,7 @@ public class MspHelper {
 
         //msp
         String mspDir = saveDir + File.separator + "msp";
-        FileUtils.makeDir(mspDir);
+        FileUtils.makeDirectory(mspDir);
         try {
             writeNodeMsp(mspDir, crypto.getMspInfo(), nodeInfo.getTlsEnable());
         }catch (Exception e) {
@@ -116,7 +115,7 @@ public class MspHelper {
 
         //tls
         String tlsDir = saveDir + File.separator + "tls";
-        FileUtils.makeDir(tlsDir);
+        FileUtils.makeDirectory(tlsDir);
         TlsInfo tls = crypto.getTlsInfo();
         if (null != tls) {
             FileUtils.writeStringToFile(tlsDir, tls.getCa(), "ca.crt");
@@ -158,7 +157,7 @@ public class MspHelper {
         boolean existsAdmin = false;
         if (null != adminCerts) {
             String admincertsPath = mspDir + File.separator + "admincerts";
-            FileUtils.makeDir(admincertsPath);
+            FileUtils.makeDirectory(admincertsPath);
             for (FabricUserInfo user : adminCerts) {
                 String signCerts = user.getCrypto().getMspInfo().getSignCerts();
                 if (StringUtils.isNotEmpty(signCerts)) {
@@ -197,7 +196,7 @@ public class MspHelper {
     private void writeRootCaCerts(String mspDir, String caCerts, String folder) throws IOException {
         if (StringUtils.isNotEmpty(caCerts)) {
             String cacertsPath = mspDir + File.separator + folder;
-            FileUtils.makeDir(cacertsPath);
+            FileUtils.makeDirectory(cacertsPath);
             String certFileName = "ca-cert.pem";
             FileUtils.writeStringToFile(cacertsPath, caCerts, certFileName);
         } else {
@@ -210,7 +209,7 @@ public class MspHelper {
             return;
         }
         String intermediatecertsPath = mspDir + File.separator + folder;
-        FileUtils.makeDir(intermediatecertsPath);
+        FileUtils.makeDirectory(intermediatecertsPath);
         for (int i = 0; i < intermediateCerts.size(); i++) {
             String intermediateCert = intermediateCerts.get(i);
             String certFileName = "intermediate" + i + "-cert.pem";
