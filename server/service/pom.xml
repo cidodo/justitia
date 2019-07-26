@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <groupId>org.hyperledger.justitia.server.service</groupId>
+    <artifactId>service</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>service</name>
+
+    <parent>
+        <artifactId>server</artifactId>
+        <groupId>org.hyperledger.justitia.server</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <modules>
+        <module>identity</module>
+        <module>node</module>
+        <module>chaincode</module>
+        <module>channel</module>
+        <module>fabric</module>
+        <module>common</module>
+        <module>face</module>
+    </modules>
+
+    <repositories>
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <properties>
+        <fabric-java-sdk-version>1.4.3</fabric-java-sdk-version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- modules -->
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>chaincode</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>channel</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>fabric</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>face</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>identity</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server.service</groupId>
+                <artifactId>node</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hyperledger.justitia.server</groupId>
+                <artifactId>dao</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <!--fabric-service-java-->
+            <dependency>
+                <groupId>org.hyperledger.fabric-sdk-java</groupId>
+                <artifactId>fabric-sdk-java</artifactId>
+                <version>${fabric-java-sdk-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.hyperledger.fabric-sdk-java</groupId>
+            <artifactId>fabric-sdk-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hyperledger.justitia.server.service</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hyperledger.justitia.server.service</groupId>
+            <artifactId>face</artifactId>
+        </dependency>
+    </dependencies>
+</project>
