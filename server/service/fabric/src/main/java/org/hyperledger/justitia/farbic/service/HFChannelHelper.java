@@ -7,7 +7,7 @@ import org.hyperledger.fabric.sdk.Peer;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.justitia.common.utils.StringUtils;
-import org.hyperledger.justitia.service.face.fabric.NetworkService;
+import org.hyperledger.justitia.common.face.service.fabric.NetworkService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +63,8 @@ public class HFChannelHelper {
 //    public Channel createChannel(HFClient client, String channelId, List<String> orderersId, List<String> peersId,
 //                                 Channel.PeerOptions options) throws InvalidArgumentException, TransactionException, HFClientContextException {
 //
-//        List<Orderer> orderers = clientHelper.createOrderers(orderersId);
-//        List<Peer> peers = clientHelper.createPeers(peersId);
+//        List<OrdererInfo> orderers = clientHelper.createOrderers(orderersId);
+//        List<PeerInfo> peers = clientHelper.createPeers(peersId);
 //        return createChannel(client, channelId, peers, orderers, options);
 //    }
 //
@@ -75,20 +75,20 @@ public class HFChannelHelper {
 //    }
 //
 //    public Channel createChannelNonPeer(String channelId) throws TransactionException, InvalidArgumentException, HFClientContextException {
-//        List<Orderer> orderers = clientHelper.createOrderers();
+//        List<OrdererInfo> orderers = clientHelper.createOrderers();
 //        return createChannel(clientHelper.getHFClient(), channelId, null, orderers, null);
 //    }
 //
 //    public Channel createChannelNonOrderer(String channelId) throws TransactionException, InvalidArgumentException, HFClientContextException {
 //        Set<String> peersId = chainDataService.getPeersId(channelId);
-//        List<Peer> peers = clientHelper.createPeers(peersId);
+//        List<PeerInfo> peers = clientHelper.createPeers(peersId);
 //        return createChannel(clientHelper.getHFClient(), channelId, peers, null, null);
 //    }
 //
 //    public Channel createChannel(HFClient client, String channelId, Channel.PeerOptions options) throws InvalidArgumentException, TransactionException, HFClientContextException {
-//        List<Orderer> orderers = clientHelper.createOrderers();
+//        List<OrdererInfo> orderers = clientHelper.createOrderers();
 //        Set<String> peersId = chainDataService.getPeersId(channelId);
-//        List<Peer> peers = clientHelper.createPeers(peersId);
+//        List<PeerInfo> peers = clientHelper.createPeers(peersId);
 //        return createChannel(client, channelId, peers, orderers, options);
 //    }
 

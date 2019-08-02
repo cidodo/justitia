@@ -1,11 +1,10 @@
 package org.hyperledger.justitia.farbic.tools;
 
 import org.hyperledger.justitia.common.Context;
-import org.hyperledger.justitia.common.utils.file.file.FileUtils;
-import org.hyperledger.justitia.farbic.exception.FabricToolsConfigException;
-import org.hyperledger.justitia.farbic.exception.FabricToolsException;
+import org.hyperledger.justitia.common.utils.file.FileUtils;
 import org.hyperledger.justitia.farbic.tools.helper.ConfigtxgenConfigHelper;
-import org.hyperledger.justitia.service.face.fabric.FabricToolsService;
+import org.hyperledger.justitia.farbic.tools.helper.CryptogenConfigHelper;
+import org.hyperledger.justitia.common.face.service.fabric.FabricToolsService;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
@@ -32,13 +31,18 @@ public class FabricToolsServiceImpl implements FabricToolsService {
         CRYPTOGEN_CONFIG_TEMPLATE = new File(Context.getProperty(Context.FABRIC_TOOLS_CRYPTOGEN_CONFIG_TEMPLATE));
     }
 
+    private File createTempOutputFile(String fileName) throws IOException {
+        return FileUtils.createTempFile(fileName);
+    }
+
     /**
      * congiftxgen
      */
     @Override
-    public File generateGenesisBlock(String systemChainId, String consortium, ArrayList<String> ordererAddresses) {
+    public File generateGenesisBlock(String memberName, String mspId, File mspDirectory, String systemChainId,
+                                     String consortium, ArrayList<String> ordererAddresses) {
         File config = new File(CONFIGTXGEN.getParent() + "configtx.yaml");
-        newConfigtxgenConfigHelper().withConsortiumName(consortium)
+        newConfigtxgenConfigHelper(memberName, mspId, mspDirectory).withConsortiumName(consortium)
                 .withOrdererAddressed(new HashSet<>(ordererAddresses))
                 .generateGenesisBlockConfig(config);
 
@@ -48,26 +52,27 @@ public class FabricToolsServiceImpl implements FabricToolsService {
     }
 
     @Override
-    public InputStream generateMemberConfig(String organizationName) {
+    public InputStream generateMemberConfig(String memberName, String mspId, File mspDirectory, String organizationName) {
         File config = new File(CONFIGTXGEN.getParent() + "configtx.yaml");
-        newConfigtxgenConfigHelper().generateMemberConfigConfig(config);
+        newConfigtxgenConfigHelper(memberName, mspId, mspDirectory).generateMemberConfigConfig(config);
 
         ConfigTxGen configTxGen = new ConfigTxGen(CONFIGTXGEN, config);
         return configTxGen.generateMemberConfig(organizationName);
     }
 
     @Override
-    public byte[] generateCreateChannelTx(String channelId, String consortium) {
+    public byte[] generateCreateChannelTx(String memberName, String mspId, File mspDirectory, String channelId, String consortium) {
         File config = new File(CONFIGTXGEN.getParent() + "configtx.yaml");
-        newConfigtxgenConfigHelper().withConsortiumName(consortium).generateCreateChannelConfig(config);
+        newConfigtxgenConfigHelper(memberName, mspId, mspDirectory)
+                .withConsortiumName(consortium).generateCreateChannelConfig(config);
 
         ConfigTxGen configTxGen = new ConfigTxGen(CONFIGTXGEN, config);
         return configTxGen.generateCreateChannelTx(channelId);
     }
 
-    private ConfigtxgenConfigHelper newConfigtxgenConfigHelper() {
+    private ConfigtxgenConfigHelper newConfigtxgenConfigHelper(String memberName, String mspId, File mspDirectory) {
         return new ConfigtxgenConfigHelper(CONFIGTXGEN_CONFIG_TEMPLATE)
-                .withMember();
+                .withMember(memberName, mspId, mspDirectory);
     }
 
     /**
@@ -81,12 +86,14 @@ public class FabricToolsServiceImpl implements FabricToolsService {
 
     @Override
     public String decode(byte[] data, String protoType) {
-        return null;
+        ConfigTxLator configTxLator = new ConfigTxLator(CONFIGTXLATOR);
+        return configTxLator.decode(data, transProto(protoType));
     }
 
     @Override
     public byte[] computeUpdate(byte[] original, byte[] updated, String channelName) {
-        return new byte[0];
+        ConfigTxLator configTxLator = new ConfigTxLator(CONFIGTXLATOR);
+        return configTxLator.computeUpdate(original, updated, channelName);
     }
 
     private ConfigTxLator.ProtoType transProto(String protoType) {
@@ -112,16 +119,30 @@ public class FabricToolsServiceImpl implements FabricToolsService {
      * cryptogen
      */
     @Override
-    public void generateCrypto() {
+    public void generateCrypto(String orgName, String identity, int peerCount, int userCount) {
+        CryptogenConfigHelper cryptogenConfigHelper = new CryptogenConfigHelper(CRYPTOGEN_CONFIG_TEMPLATE)
+                .withOrgName(orgName)
+                .withIdentity(identity)
+                .withPeerCount(peerCount)
+                .withUserCount(userCount);
 
+        File config = new File(CONFIGTXGEN.getParent() + "crypto-config.yaml");
+        cryptogenConfigHelper.modifyConfigFile(config);
+        Cryptogen cryptogen =  new Cryptogen(CRYPTOGEN, config);
+        cryptogen.extendCrypto();
     }
 
     @Override
-    public void extendCrypto() {
+    public void extendCrypto(String orgName, String identity, int peerCount, int userCount) {
+        CryptogenConfigHelper cryptogenConfigHelper = new CryptogenConfigHelper(CRYPTOGEN_CONFIG_TEMPLATE)
+                .withOrgName(orgName)
+                .withIdentity(identity)
+                .withPeerCount(peerCount)
+                .withUserCount(userCount);
 
-    }
-
-    private File createTempOutputFile(String fileName) throws IOException {
-        return FileUtils.createTempFile(fileName);
+        File config = new File(CONFIGTXGEN.getParent() + "crypto-config.yaml");
+        cryptogenConfigHelper.modifyConfigFile(config);
+        Cryptogen cryptogen =  new Cryptogen(CRYPTOGEN, config);
+        cryptogen.generateCrypto();
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.ContainerMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Container" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.ContainerMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.node.Container" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="host_id" property="hostId" jdbcType="VARCHAR" />
     <result column="container_name" property="containerName" jdbcType="VARCHAR" />
@@ -12,7 +12,7 @@
     <result column="port_map" property="portMap" jdbcType="VARCHAR" />
     <result column="deployer" property="deployer" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Container" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.common.bean.node.Container" extends="BaseResultMap" >
     <result column="volumes" property="volumes" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -33,7 +33,7 @@
     delete from container
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.node.Container" >
     insert into container (id, host_id, container_name, 
       image, tag, working_dir, 
       network_mode, port_map, deployer, 
@@ -43,7 +43,7 @@
       #{networkMode,jdbcType=VARCHAR}, #{portMap,jdbcType=VARCHAR}, #{deployer,jdbcType=VARCHAR}, 
       #{volumes,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.node.Container" >
     insert into container
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -110,7 +110,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.node.Container" >
     update container
     <set >
       <if test="hostId != null" >
@@ -143,7 +143,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.common.bean.node.Container" >
     update container
     set host_id = #{hostId,jdbcType=VARCHAR},
       container_name = #{containerName,jdbcType=VARCHAR},
@@ -156,7 +156,7 @@
       volumes = #{volumes,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Container" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.node.Container" >
     update container
     set host_id = #{hostId,jdbcType=VARCHAR},
       container_name = #{containerName,jdbcType=VARCHAR},

@@ -40,14 +40,14 @@ public class CryptogenConfigHelper extends ConfigHelper{
         return this;
     }
 
-    public File modifyConfigFile(File output) throws IOException, FabricToolsConfigException {
+    public void modifyConfigFile(File output) throws IOException, FabricToolsConfigException {
         notEmpty(orgName, "Organization name is empty.");
         notEmpty(identity, "Organization identity is empty.");
 
         Map original = readConfigFromYaml(configTemplate);
         Map orgConfig = generatePeerOrgConfig(orgName, identity, userCount, peerCount);
         setPeerOrg(original, orgConfig);
-        return writeConfigToYaml(original, output);
+        writeConfigToYaml(original, output);
     }
 
     @SuppressWarnings("unchecked")

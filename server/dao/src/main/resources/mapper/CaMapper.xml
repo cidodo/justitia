@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.CaMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Ca" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.CaMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.identity.crypto.Ca" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="root" property="root" jdbcType="BIT" />
@@ -9,7 +9,7 @@
     <result column="ca_type" property="caType" jdbcType="VARCHAR" />
     <result column="ca_server" property="caServer" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Ca" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.common.bean.identity.crypto.Ca" extends="BaseResultMap" >
     <result column="cert" property="cert" jdbcType="LONGVARCHAR" />
     <result column="key" property="key" jdbcType="LONGVARCHAR" />
   </resultMap>
@@ -31,7 +31,7 @@
     delete from ca
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Ca" >
     insert into ca (id, name, root, parent, 
       ca_type, ca_server, cert, 
       key)
@@ -39,7 +39,7 @@
       #{caType,jdbcType=VARCHAR}, #{caServer,jdbcType=VARCHAR}, #{cert,jdbcType=LONGVARCHAR}, 
       #{key,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Ca" >
     insert into ca
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -94,7 +94,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Ca" >
     update ca
     <set >
       <if test="name != null" >
@@ -121,7 +121,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Ca" >
     update ca
     set name = #{name,jdbcType=VARCHAR},
       root = #{root,jdbcType=BIT},
@@ -132,7 +132,7 @@
       key = #{key,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Ca" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Ca" >
     update ca
     set name = #{name,jdbcType=VARCHAR},
       root = #{root,jdbcType=BIT},

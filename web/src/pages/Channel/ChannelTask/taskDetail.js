@@ -39,7 +39,7 @@ class TaskDetail extends Component {
   render() {
     const columns = [
       {
-        title: '请求ID', key: 'requestId', dataIndex: 'requestId', width: '25%',
+        title: '请求ID', key: 'proposalId', dataIndex: 'proposalId', width: '25%',
         render: (record) => (<span style={{ wordBreak: 'break-all' }}>{record}</span>)
       },
       { title: '任务描述', key: 'description', dataIndex: 'description' },
@@ -69,7 +69,7 @@ class TaskDetail extends Component {
 
     return (
       <Fragment>
-        <Table bordered rowKey="requestId" loading={isLoading} columns={columns} dataSource={taskDetail} />
+        <Table bordered rowKey="proposalId" loading={isLoading} columns={columns} dataSource={taskDetail} />
         <Modal
           width={800}
           title="任务内容详情"

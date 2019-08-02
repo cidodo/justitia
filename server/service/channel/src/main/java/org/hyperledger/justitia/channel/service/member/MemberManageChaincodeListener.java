@@ -114,7 +114,7 @@ public class MemberManageChaincodeListener implements InitializingBean {
 //            if (!registeredChannels.containsKey(channelId)) {
 //                Set<String> peersName = Context.getPeersName(channelId);
 //                if (peersName.isEmpty()) {
-//                    throw new Exception("No Peer read can register to listen");
+//                    throw new Exception("No PeerInfo read can register to listen");
 //                }
 //                Set<String> installedChaincodePeers = new HashSet<>();
 //                for (String peerName : peersName) {
@@ -304,8 +304,8 @@ public class MemberManageChaincodeListener implements InitializingBean {
 //                                for (ChannelConfigTask task : tasks) {
 //                                    if (configVersion != task.getChannelConfigVersion() && "signing".equals(task.getStatus())) {
 //                                        try {
-//                                            memberManageChaincode.updateRequestState(channelId, task.getRequestId(), MemberManageChaincode.RequestState.INVALID);
-//                                            taskDao.updateStatus(task.getRequestId(), "invalid");
+//                                            memberManageChaincode.updateRequestState(channelId, task.getProposalId(), MemberManageChaincode.RequestState.INVALID);
+//                                            taskDao.updateStatus(task.getProposalId(), "invalid");
 //                                        } catch (MemberManageException e) {
 //                                            LOGGER.warn(e);
 //                                        }

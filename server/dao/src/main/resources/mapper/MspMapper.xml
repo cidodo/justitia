@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.MspMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Msp" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.MspMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.identity.crypto.Msp" >
     <id column="id" property="id" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Msp" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.common.bean.identity.crypto.Msp" extends="BaseResultMap" >
     <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
     <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
     <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
@@ -36,7 +36,7 @@
     delete from msp
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" >
     insert into msp (id, admin_users_id, ca_certs, 
       intermediate_certs, key_store, sign_certs, 
       tls_ca_certs, tls_intermediate_certs, 
@@ -48,7 +48,7 @@
       #{tlsCerts,jdbcType=LONGVARCHAR}, #{tlsKey,jdbcType=LONGVARCHAR}, #{crls,jdbcType=LONGVARCHAR}, 
       #{configFile,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" >
     insert into msp
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -127,7 +127,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" >
     update msp
     <set >
       <if test="adminUsersId != null" >
@@ -166,7 +166,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Msp" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" >
     update msp
     set admin_users_id = #{adminUsersId,jdbcType=LONGVARCHAR},
       ca_certs = #{caCerts,jdbcType=LONGVARCHAR},

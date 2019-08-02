@@ -180,9 +180,9 @@ public class ConfigtxgenConfigHelper extends ConfigHelper{
     private void setOrdererAddressesInfo(Map original, Set<String> ordererAddresses) throws FabricToolsConfigException {
         if (ordererAddresses != null && !ordererAddresses.isEmpty()) {
             try {
-                Map orderer = (Map) original.get("Orderer");
+                Map orderer = (Map) original.get("OrdererInfo");
                 orderer.replace("Addresses", ordererAddresses);
-                ((Map) ((Map) ((Map) original.get("Profiles")).get("OrdererGenesis")).get("Orderer")).replace("Addresses", ordererAddresses);
+                ((Map) ((Map) ((Map) original.get("Profiles")).get("OrdererGenesis")).get("OrdererInfo")).replace("Addresses", ordererAddresses);
             } catch (Throwable e) {
                 String msg= String.format("Missing orderer information in Profile %s", configTemplate.getPath());
                 throw new FabricToolsConfigException(msg);

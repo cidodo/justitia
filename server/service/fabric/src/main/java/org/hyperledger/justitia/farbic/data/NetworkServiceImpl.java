@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.farbic.data;
 
-import org.hyperledger.justitia.service.face.fabric.NetworkService;
-import org.hyperledger.justitia.service.face.fabric.bean.ChannelMember;
+import org.hyperledger.justitia.common.face.service.fabric.NetworkService;
+import org.hyperledger.justitia.common.bean.channel.ChannelMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

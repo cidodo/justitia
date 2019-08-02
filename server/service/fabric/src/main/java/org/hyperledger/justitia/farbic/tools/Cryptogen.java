@@ -11,7 +11,7 @@ public class Cryptogen {
     private final File cryptogenFile;
     private final File configFile;
 
-    private Cryptogen(File cryptogen, File config) throws FabricToolsException {
+    Cryptogen(File cryptogen, File config) throws FabricToolsException {
         if (!cryptogen.exists()) {
             throw new FabricToolsException(String.format("Not found fabric tool cryptogen in directory %s.", cryptogen.getPath()));
         }
@@ -22,6 +22,15 @@ public class Cryptogen {
 
         this.cryptogenFile = cryptogen;
         this.configFile = config;
+    }
+
+    public void generateCrypto() throws FabricToolsException {
+        String command = String.format("./cryptogen generate --config=%s", configFile);
+        CallShell.Result result = callCryptogen(command);
+
+        if (!result.isSuccess()) {
+            throw new FabricToolsException("Cryptogen call failed:" + result.getErrorInfo());
+        }
     }
 
     public void extendCrypto() throws FabricToolsException {

@@ -50,7 +50,7 @@ public class FabricServiceHelper {
 
         Set<ProposalResponse> success = consistencySets.iterator().next();
         if (success.isEmpty()) {
-            String cause = "There is no effective endorsement.";
+            String cause = String.format("There is no effective endorsement. %s", invalid.iterator().next().getMessage());
             throw new FabricServiceException(FabricServiceException.ENDORSER_FAILED, cause);
         }
 

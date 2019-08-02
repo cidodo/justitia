@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.channel;
 
-import org.hyperledger.justitia.service.face.channel.ChannelManageService;
-import org.hyperledger.justitia.service.face.channel.bean.ChannelInfo;
+import org.hyperledger.justitia.common.face.service.channel.ChannelManageService;
+import org.hyperledger.justitia.common.bean.channel.ChannelInfo;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
 import org.hyperledger.justitia.scheduler.controller.DownloadHelper;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.OrdererMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Orderer" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.OrdererMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.node.OrdererInfo" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="INTEGER" />
@@ -24,7 +24,7 @@
     delete from orderer
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.node.OrdererInfo" >
     insert into orderer (id, ip, port, 
       container_id, msp_id, tls_enable, 
       double_verify, system_chain_id)
@@ -32,7 +32,7 @@
       #{containerId,jdbcType=VARCHAR}, #{mspId,jdbcType=VARCHAR}, #{tlsEnable,jdbcType=BIT}, 
       #{doubleVerify,jdbcType=BIT}, #{systemChainId,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.node.OrdererInfo" >
     insert into orderer
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -87,7 +87,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.node.OrdererInfo" >
     update orderer
     <set >
       <if test="ip != null" >
@@ -114,7 +114,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Orderer" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.node.OrdererInfo" >
     update orderer
     set ip = #{ip,jdbcType=VARCHAR},
       port = #{port,jdbcType=INTEGER},
@@ -139,7 +139,7 @@
     tls_intermediate_certs, tls_certs, tls_key, crls, config_file
     </sql>
 
-  <resultMap id="MspInfo" type="org.hyperledger.justitia.dao.bean.Msp">
+  <resultMap id="MspInfo" type="org.hyperledger.justitia.common.bean.identity.crypto.Msp">
     <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
     <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
     <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
@@ -153,7 +153,7 @@
     <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
   </resultMap>
 
-  <resultMap id="OrdererBase" type="org.hyperledger.justitia.dao.bean.Orderer" >
+  <resultMap id="OrdererBase" type="org.hyperledger.justitia.common.bean.node.OrdererInfo" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="INTEGER" />
@@ -164,12 +164,12 @@
     <result column="system_chain_id" property="systemChainId" jdbcType="VARCHAR" />
   </resultMap>
 
-  <resultMap id="OrdererWithTls" type="org.hyperledger.justitia.dao.bean.Orderer" extends="OrdererBase">
-    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getTls"/>
+  <resultMap id="OrdererWithTls" type="org.hyperledger.justitia.common.bean.node.OrdererInfo" extends="OrdererBase">
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" select="getTls"/>
   </resultMap>
 
-  <resultMap id="OrdererWithCrypto" type="org.hyperledger.justitia.dao.bean.Orderer" extends="OrdererBase">
-    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+  <resultMap id="OrdererWithCrypto" type="org.hyperledger.justitia.common.bean.node.OrdererInfo" extends="OrdererBase">
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" select="getMsp"/>
   </resultMap>
 
 

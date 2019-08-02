@@ -1,6 +1,5 @@
 package org.hyperledger.justitia.scheduler.controller;
 
-import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

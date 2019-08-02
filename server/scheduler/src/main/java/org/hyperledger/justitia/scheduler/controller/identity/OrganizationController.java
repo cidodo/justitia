@@ -1,8 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.identity;
 
-import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
-import org.hyperledger.justitia.service.face.identity.read.OrganizationReader;
-import org.hyperledger.justitia.service.face.identity.write.OrganizationWriter;
+import org.hyperledger.justitia.common.face.service.identity.read.OrganizationReader;
+import org.hyperledger.justitia.common.face.service.identity.write.OrganizationWriter;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.SetOrganizationBean;
 import org.hyperledger.justitia.scheduler.controller.identity.format.FormatData;

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.HostMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Host" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.HostMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.node.Host" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="protocol" property="protocol" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="INTEGER" />
     <result column="tls_enable" property="tlsEnable" jdbcType="BIT" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.Host" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.common.bean.node.Host" extends="BaseResultMap" >
     <result column="cert_path" property="certPath" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -29,7 +29,7 @@
     delete from host
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Host" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.node.Host" >
     insert into host (id, protocol, ip, 
       port, tls_enable, cert_path
       )
@@ -37,7 +37,7 @@
       #{port,jdbcType=INTEGER}, #{tlsEnable,jdbcType=BIT}, #{certPath,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Host" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.node.Host" >
     insert into host
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Host" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.node.Host" >
     update host
     <set >
       <if test="protocol != null" >
@@ -101,7 +101,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.Host" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.common.bean.node.Host" >
     update host
     set protocol = #{protocol,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},
@@ -110,7 +110,7 @@
       cert_path = #{certPath,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Host" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.node.Host" >
     update host
     set protocol = #{protocol,jdbcType=VARCHAR},
       ip = #{ip,jdbcType=VARCHAR},

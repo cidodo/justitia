@@ -4,8 +4,8 @@ import org.hyperledger.fabric.protos.peer.Query;
 import org.hyperledger.fabric.sdk.*;
 import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
-import org.hyperledger.justitia.service.face.chaincode.bean.TransactionRequestBean;
-import org.hyperledger.justitia.service.face.fabric.ChaincodeService;
+import org.hyperledger.justitia.common.bean.chaincode.TransactionRequestBean;
+import org.hyperledger.justitia.common.face.service.fabric.ChaincodeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +81,6 @@ public class ChaincodeServiceImpl extends FabricServiceHelper implements Chainco
         channel.shutdown(true);
     }
 
-
     @Override
     public BlockEvent.TransactionEvent invoke(TransactionRequestBean transactionRequestBean) throws InvalidArgumentException, ProposalException {
         HFClient client = clientHelper.getHFClient();
@@ -105,6 +104,36 @@ public class ChaincodeServiceImpl extends FabricServiceHelper implements Chainco
     }
 
     @Override
+    public Collection<ProposalResponse> endorsement(TransactionRequestBean transactionRequestBean) throws ProposalException, InvalidArgumentException {
+        HFClient client = clientHelper.getHFClient();
+        Channel channel = clientHelper.createChannel(client, transactionRequestBean.getChannelName());
+
+        TransactionProposalRequest proposalRequest = client.newTransactionProposalRequest();
+        transactionRequestBean.toRequest(proposalRequest);
+
+        Collection<Peer> peers = getPeersWithChannel(transactionRequestBean.getPeerNames(), channel);
+        if (peers.size() == 0) {
+            throw new IllegalArgumentException("invoke transaction failed: at least one peer needed");
+        }
+
+        channel.shutdown(true);
+        return channel.sendTransactionProposal(proposalRequest, peers);
+    }
+
+    @Override
+    public BlockEvent.TransactionEvent sendTransaction(String channelId, Collection<ProposalResponse> responses) {
+        HFClient client = clientHelper.getHFClient();
+        Channel channel = clientHelper.createChannel(client, channelId);
+        Set<ProposalResponse> successProposal = checkProposalResponses(responses);
+
+        CompletableFuture<BlockEvent.TransactionEvent> future = channel.sendTransaction(successProposal, channel.getOrderers());
+        BlockEvent.TransactionEvent transactionResult = getTransactionResult(future);
+
+        channel.shutdown(true);
+        return transactionResult;
+    }
+
+    @Override
     public Collection<ProposalResponse> query(TransactionRequestBean transactionRequestBean) throws ProposalException, InvalidArgumentException {
         HFClient client = clientHelper.getHFClient();
         Channel channel = clientHelper.createChannel(client, transactionRequestBean.getChannelName());
@@ -117,8 +146,8 @@ public class ChaincodeServiceImpl extends FabricServiceHelper implements Chainco
             throw new IllegalArgumentException("query transaction failed: at least one peer needed");
         }
         Collection<ProposalResponse> proposalResponses = channel.queryByChaincode(proposalRequest, peers);
-        channel.shutdown(true);
 
+        channel.shutdown(true);
         return proposalResponses;
     }
 

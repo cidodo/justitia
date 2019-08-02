@@ -1,12 +1,12 @@
 package org.hyperledger.justitia.scheduler.service.proxy.channel;
 
-import org.hyperledger.justitia.service.face.channel.bean.ChannelInfo;
+import org.hyperledger.justitia.common.bean.channel.ChannelInfo;
 
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
-public class ChannelManageService implements org.hyperledger.justitia.service.face.channel.ChannelManageService {
+public class ChannelManageService implements org.hyperledger.justitia.common.face.service.channel.ChannelManageService {
     @Override
     public void createChannel(String channelId, String consortium, Collection<String> peersId) {
 

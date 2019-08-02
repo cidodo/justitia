@@ -4,8 +4,8 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hyperledger.justitia.common.bean.FabricUser;
-import org.hyperledger.justitia.common.utils.CheckUtils;
+import org.hyperledger.justitia.common.bean.FabricUserImpl;
+import org.hyperledger.justitia.common.utils.ParameterCheckUtils;
 
 public class NetworkConfig {
     private static final Log logger = LogFactory.getLog(NetworkConfig.class);
@@ -35,7 +35,7 @@ public class NetworkConfig {
         this.clientOrganization = new OrgInfo(name, mspId);
     }
 
-    public void setPeerAdmin(FabricUser admin) {
+    public void setPeerAdmin(FabricUserImpl admin) {
         this.clientOrganization.setPeerAdmin(admin);
     }
 
@@ -56,7 +56,7 @@ public class NetworkConfig {
     }
 
     /**
-     * Holds a network "face" (eg. Peer, Orderer)
+     * Holds a network "face" (eg. PeerInfo, OrdererInfo)
      */
     private class Node {
         private final String name;
@@ -90,8 +90,8 @@ public class NetworkConfig {
         private final String mspId;
         private final List<String> peerNames = new ArrayList<>();
         private final List<CAInfo> certificateAuthorities = new ArrayList<>();
-        private Map<String, FabricUser> users = new HashMap<>();
-        private FabricUser peerAdmin;
+        private Map<String, FabricUserImpl> users = new HashMap<>();
+        private FabricUserImpl peerAdmin;
 
         OrgInfo(String orgName, String mspId) {
             this.name = orgName;
@@ -122,18 +122,18 @@ public class NetworkConfig {
             return new LinkedList<>(certificateAuthorities);
         }
 
-        public void addUser(FabricUser user) {
-            CheckUtils.notNull(user, "User is null.");
+        public void addUser(FabricUserImpl user) {
+            ParameterCheckUtils.notNull(user, "User is null.");
             this.users.put(user.getName(), user);
         }
 
-        public FabricUser getUser(String userName) {
-            CheckUtils.notEmpty(userName, "User's name is empty.");
+        public FabricUserImpl getUser(String userName) {
+            ParameterCheckUtils.notEmpty(userName, "User's name is empty.");
             return users.get(userName);
         }
 
-        public FabricUser removeUser(String userName) {
-            CheckUtils.notEmpty(userName, "User's name is empty.");
+        public FabricUserImpl removeUser(String userName) {
+            ParameterCheckUtils.notEmpty(userName, "User's name is empty.");
             if (this.users.containsKey(userName)) {
                 return users.remove(userName);
             } else {
@@ -141,11 +141,11 @@ public class NetworkConfig {
             }
         }
 
-        public FabricUser getPeerAdmin() {
+        public FabricUserImpl getPeerAdmin() {
             return peerAdmin;
         }
 
-        public void setPeerAdmin(FabricUser peerAdmin) {
+        public void setPeerAdmin(FabricUserImpl peerAdmin) {
             this.peerAdmin = peerAdmin;
         }
     }
@@ -161,9 +161,9 @@ public class NetworkConfig {
         private String caName;
         private Properties properties;
 
-        private final List<FabricUser> registrars;
+        private final List<FabricUserImpl> registrars;
 
-        CAInfo(String name, String mspid, String url, List<FabricUser> registrars, Properties httpOptions) {
+        CAInfo(String name, String mspid, String url, List<FabricUserImpl> registrars, Properties httpOptions) {
             this.name = name;
             this.url = url;
             this.httpOptions = httpOptions;
@@ -199,7 +199,7 @@ public class NetworkConfig {
             return this.properties;
         }
 
-        public Collection<FabricUser> getRegistrars() {
+        public Collection<FabricUserImpl> getRegistrars() {
             return new LinkedList<>(registrars);
         }
     }

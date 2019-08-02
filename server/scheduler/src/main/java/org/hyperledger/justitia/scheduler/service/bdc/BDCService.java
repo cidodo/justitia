@@ -1,11 +1,10 @@
 package org.hyperledger.justitia.scheduler.service.bdc;
 
-import org.hyperledger.justitia.service.face.channel.ChannelManageService;
+import org.hyperledger.justitia.common.face.service.channel.ChannelManageService;
 import org.hyperledger.justitia.common.ExternalResources;
 import org.hyperledger.justitia.common.exception.ServiceException;
-import org.hyperledger.justitia.common.utils.file.file.FileUtils;
-import org.hyperledger.justitia.common.utils.file.file.YamlFileUtils;
-import org.hyperledger.justitia.common.utils.file.file.ZipFileUtils;
+import org.hyperledger.justitia.common.utils.file.FileUtils;
+import org.hyperledger.justitia.common.utils.file.ZipFileUtils;
 import org.hyperledger.justitia.farbic.exception.FabricToolsException;
 import org.hyperledger.justitia.farbic.tools.ConfigTxGen;
 import org.hyperledger.justitia.farbic.tools.Cryptogen;
@@ -16,10 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class BDCService {

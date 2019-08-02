@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.channel;
 
-import org.hyperledger.justitia.service.face.channel.ConsortiumManageService;
-import org.hyperledger.justitia.service.face.channel.bean.ConsortiumInfo;
+import org.hyperledger.justitia.common.face.service.channel.ConsortiumManageService;
+import org.hyperledger.justitia.common.bean.channel.ConsortiumInfo;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.channel.beans.AddConsortiumMemberBean;

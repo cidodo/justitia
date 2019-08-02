@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.identity.service;
 
-import org.hyperledger.justitia.service.face.identity.UserService;
-import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
+import org.hyperledger.justitia.common.bean.identity.FabricUser;
+import org.hyperledger.justitia.common.face.service.identity.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,32 +17,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<FabricUserInfo> getUsers() {
+    public List<FabricUser> getUsers() {
         return identityConfig.getUsers();
     }
 
     @Override
-    public FabricUserInfo getAdminUser() {
+    public FabricUser getAdminUser() {
         return identityConfig.getAdminUser();
     }
 
     @Override
-    public FabricUserInfo getRandomUser() {
+    public FabricUser getRandomUser() {
         return identityConfig.getUser();
     }
 
     @Override
-    public FabricUserInfo getUser(String userId) {
+    public FabricUser getUser(String userId) {
         return identityConfig.getUser(userId);
     }
 
     @Override
-    public void setUser(FabricUserInfo userInfo) {
+    public void setUser(FabricUser userInfo) {
         identityConfig.setUser(userInfo);
     }
 
     @Override
-    public void updateUserInfo(FabricUserInfo userInfo) {
+    public void updateUserInfo(FabricUser userInfo) {
         identityConfig.updateUser(userInfo);
     }
 

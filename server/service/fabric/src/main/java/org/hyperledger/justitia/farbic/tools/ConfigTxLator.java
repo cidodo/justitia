@@ -2,14 +2,13 @@ package org.hyperledger.justitia.farbic.tools;
 
 import org.apache.commons.io.IOUtils;
 import org.hyperledger.fabric.protos.common.Configtx;
-import org.hyperledger.justitia.common.utils.file.file.FileUtils;
+import org.hyperledger.justitia.common.utils.file.FileUtils;
 import org.hyperledger.justitia.farbic.exception.FabricToolsException;
 import org.hyperledger.justitia.farbic.tools.helper.ComputeUpdate;
 import org.hyperledger.justitia.farbic.utils.ssh.CallLocalShell;
 import org.hyperledger.justitia.farbic.utils.ssh.CallShell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 
@@ -26,7 +25,7 @@ public class ConfigTxLator {
         CONFIG_UPDATE_ENVELOPE("ConfigUpdateEnvelope");
 
         private String type;
-        public ProtoType(String protoType) {
+        ProtoType(String protoType) {
             this.type = protoType;
         }
         public String getType() {
@@ -34,7 +33,7 @@ public class ConfigTxLator {
         }
     }
 
-    public ConfigTxLator(File configtxlator) throws FabricToolsException {
+    ConfigTxLator(File configtxlator) throws FabricToolsException {
         if (null == configtxlator) {
             throw new IllegalArgumentException("Fabric tool configtxlator is null.");
         }

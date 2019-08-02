@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.scheduler.controller.node;
 
-import org.hyperledger.justitia.service.face.node.PeerService;
+import org.hyperledger.justitia.common.face.service.node.PeerService;
 import org.hyperledger.justitia.scheduler.controller.ResponseBean;
 import org.hyperledger.justitia.scheduler.controller.node.bean.CreatePeerBean;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.SetNodeBean;

@@ -57,13 +57,14 @@ CREATE TABLE `container`  (
 DROP TABLE IF EXISTS `couchdb`;
 CREATE TABLE `couchdb`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `organization_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `ip` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `port` int(255) NULL DEFAULT NULL,
   `container_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `msp_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `tls_enable` tinyint(1) NULL DEFAULT NULL,
   `double_verify` tinyint(1) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`, `organization_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -94,7 +95,7 @@ CREATE TABLE `fabric_user`  (
   `admin` tinyint(1) NOT NULL,
   `msp_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `tag` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`, `organization_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -137,6 +138,7 @@ CREATE TABLE `msp`  (
 DROP TABLE IF EXISTS `orderer`;
 CREATE TABLE `orderer`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `organization_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `ip` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `port` int(255) NULL DEFAULT NULL,
   `container_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -144,7 +146,7 @@ CREATE TABLE `orderer`  (
   `tls_enable` tinyint(1) NULL DEFAULT NULL,
   `double_verify` tinyint(1) NULL DEFAULT NULL,
   `system_chain_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`, `organization_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -169,6 +171,7 @@ CREATE TABLE `organization`  (
 DROP TABLE IF EXISTS `peer`;
 CREATE TABLE `peer`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `organization_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `ip` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `port` int(255) NULL DEFAULT NULL,
   `container_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -177,7 +180,7 @@ CREATE TABLE `peer`  (
   `double_verify` tinyint(1) NULL DEFAULT NULL,
   `couchdb_enable` tinyint(1) NULL DEFAULT NULL,
   `couchdb_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`, `organization_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 SET FOREIGN_KEY_CHECKS = 1;

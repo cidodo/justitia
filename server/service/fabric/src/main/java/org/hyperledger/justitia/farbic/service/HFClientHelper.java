@@ -6,13 +6,10 @@ import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.helper.Config;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
 import org.hyperledger.justitia.farbic.exception.FabricServiceException;
-import org.hyperledger.justitia.service.face.fabric.NetworkService;
-import org.hyperledger.justitia.service.face.identity.NodeService;
-import org.hyperledger.justitia.service.face.identity.UserService;
-import org.hyperledger.justitia.service.face.identity.bean.NodeInfo;
-import org.hyperledger.justitia.service.face.identity.bean.OrdererInfo;
-import org.hyperledger.justitia.service.face.identity.bean.PeerInfo;
-import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
+import org.hyperledger.justitia.common.face.service.fabric.NetworkService;
+import org.hyperledger.justitia.common.face.service.identity.NodeService;
+import org.hyperledger.justitia.common.face.service.identity.UserService;
+import org.hyperledger.justitia.common.bean.identity.NodeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +42,7 @@ public class HFClientHelper {
     }
 
     public User getAdminUser() {
-        FabricUserInfo adminUserInfo = userService.getAdminUser();
+        FabricUser adminUserInfo = userService.getAdminUser();
         if (null == adminUserInfo) {
             throw new FabricServiceException(NO_ADMIN_USER);
         }
@@ -57,7 +54,7 @@ public class HFClientHelper {
     }
 
     public HFClient getHFClientWithAdmin() {
-        FabricUserInfo adminUserInfo = userService.getAdminUser();
+        FabricUser adminUserInfo = userService.getAdminUser();
         if (null == adminUserInfo) {
             throw new FabricServiceException(NO_ADMIN_USER);
         }
@@ -65,7 +62,7 @@ public class HFClientHelper {
     }
 
     public HFClient getHFClient() {
-        FabricUserInfo randomUserInfo = userService.getRandomUser();
+        FabricUser randomUserInfo = userService.getRandomUser();
         if (null == randomUserInfo) {
             throw new FabricServiceException(NO_USERS);
         }
@@ -73,14 +70,14 @@ public class HFClientHelper {
     }
 
     public HFClient getHFClient(String userId) {
-        FabricUserInfo userInfo = userService.getUser(userId);
+        FabricUser userInfo = userService.getUser(userId);
         if (null == userInfo) {
             throw new FabricServiceException(NOT_FOUND_USER_BY_ID, userId);
         }
         return createHFClient(userInfo);
     }
 
-    private HFClient createHFClient(FabricUserInfo userInfo) {
+    private HFClient createHFClient(FabricUser userInfo) {
         HFClient client = HFClient.createNewInstance();
         try {
             client.setCryptoSuite(CryptoSuite.Factory.getCryptoSuite());

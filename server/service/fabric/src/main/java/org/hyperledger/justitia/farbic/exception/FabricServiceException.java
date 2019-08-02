@@ -10,11 +10,11 @@ public class FabricServiceException extends ServiceException {
     public static final int NOT_FOUND_USER_BY_ID     = 140111;
     public static final int NO_USERS                 = 140112;
     public static final int NO_ADMIN_USER            = 140113;
-    //Peer
+    //PeerInfo
     public static final int NOT_FOUND_PEER_BY_ID     = 140121;
     public static final int NO_PEERS                 = 140122;
     public static final int NOT_FOUND_PEER_BY_CHANNEL = 140123;
-    //Orderer
+    //OrdererInfo
     public static final int NOT_FOUND_ORDERER_BY_ID  = 140131;
     public static final int NO_ORDERERS              = 140132;
 
@@ -29,9 +29,9 @@ public class FabricServiceException extends ServiceException {
     //Channel
     public static final int CREATE_CHANNEL_ERROR     = 140220;
     public static final int CHANNEL_INITIALIZE_ERROR = 140223;
-    //Orderer
+    //OrdererInfo
     public static final int CREATE_ORDERER_ERROR     = 140230;
-    //Peer
+    //PeerInfo
     public static final int CREATE_PEER_ERROR        = 140240;
 
     /**
@@ -41,6 +41,12 @@ public class FabricServiceException extends ServiceException {
     public static final int SEND_TRANSACTION_FAILED  = 140322;
     public static final int WAIT_RESULT_EXCEPTION    = 140323;
     public static final int INVALID_TRANSACTION      = 140324;
+
+
+    /**
+     * Fabric tools异常:04
+     */
+    public static final int
 
     /**
      * 其他异常:99

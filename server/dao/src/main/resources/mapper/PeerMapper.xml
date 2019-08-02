@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.PeerMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Peer" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.PeerMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.node.PeerInfo" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="INTEGER" />
@@ -25,7 +25,7 @@
     delete from peer
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Peer" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.node.PeerInfo" >
     insert into peer (id, ip, port, 
       container_id, msp_id, tls_enable, 
       double_verify, couchdb_enable, couchdb_id
@@ -35,7 +35,7 @@
       #{doubleVerify,jdbcType=BIT}, #{couchdbEnable,jdbcType=BIT}, #{couchdbId,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Peer" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.node.PeerInfo" >
     insert into peer
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -96,7 +96,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Peer" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.node.PeerInfo" >
     update peer
     <set >
       <if test="ip != null" >
@@ -126,7 +126,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Peer" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.node.PeerInfo" >
     update peer
     set ip = #{ip,jdbcType=VARCHAR},
       port = #{port,jdbcType=INTEGER},
@@ -148,7 +148,7 @@
     tls_intermediate_certs, tls_certs, tls_key, crls, config_file
     </sql>
 
-  <resultMap id="MspInfo" type="org.hyperledger.justitia.dao.bean.Msp">
+  <resultMap id="MspInfo" type="org.hyperledger.justitia.common.bean.identity.crypto.Msp">
     <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
     <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
     <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
@@ -162,7 +162,7 @@
     <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
   </resultMap>
 
-  <resultMap id="PeerBase" type="org.hyperledger.justitia.dao.bean.Peer" >
+  <resultMap id="PeerBase" type="org.hyperledger.justitia.common.bean.node.PeerInfo" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="INTEGER" />
@@ -174,12 +174,12 @@
     <result column="couchdb_id" property="couchdbId" jdbcType="VARCHAR" />
   </resultMap>
 
-  <resultMap id="PeerWithTls" type="org.hyperledger.justitia.dao.bean.Peer" extends="PeerBase">
-    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getTls"/>
+  <resultMap id="PeerWithTls" type="org.hyperledger.justitia.common.bean.node.PeerInfo" extends="PeerBase">
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" select="getTls"/>
   </resultMap>
 
-  <resultMap id="PeerWithCrypto" type="org.hyperledger.justitia.dao.bean.Peer" extends="PeerBase">
-    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+  <resultMap id="PeerWithCrypto" type="org.hyperledger.justitia.common.bean.node.PeerInfo" extends="PeerBase">
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" select="getMsp"/>
   </resultMap>
 
 

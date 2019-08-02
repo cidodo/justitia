@@ -1,17 +1,19 @@
 package org.hyperledger.justitia.identity.dao;
 
-import org.hyperledger.justitia.dao.bean.Organization;
-import org.hyperledger.justitia.dao.mapper.OrganizationMapper;
-import org.hyperledger.justitia.identity.dao.format.OrganizationFormater;
+import org.hyperledger.justitia.common.bean.identity.Organization;
+import org.hyperledger.justitia.common.bean.identity.crypto.Ca;
+import org.hyperledger.justitia.common.bean.identity.crypto.Msp;
+import org.hyperledger.justitia.common.face.dao.mapper.OrganizationMapper;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.CaInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.MspInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.OrganizationCrypto;
+import org.hyperledger.justitia.identity.exception.IdentityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notNull;
 
 @Component
 public class OrganizationDao {
@@ -26,52 +28,38 @@ public class OrganizationDao {
         this.caDao = caDao;
     }
 
-    public OrganizationInfo getOrganizationBaseInfo() {
-        Organization organizationBaseInfo = organizationMapper.getOrganizationBase();
-        return OrganizationFormater.organization2OrganizationInfo(organizationBaseInfo);
+    public List<Organization> selectOrganization() {
+        return null;
     }
 
-    public OrganizationInfo getOrganizationInfoWithCryptoMsp() {
-        Organization organizationInfo = organizationMapper.getOrganizationWithMsp();
-        return OrganizationFormater.organization2OrganizationInfo(organizationInfo);
-    }
-
-    public OrganizationInfo getOrganizationInfoWithCrypto() {
-        Organization organizationInfo = organizationMapper.getOrganizationWithCrypto();
-        return OrganizationFormater.organization2OrganizationInfo(organizationInfo);
+    public Organization getOrganization(String orgId) {
+        return organizationMapper.selectByPrimaryKey(orgId);
     }
 
     @Transactional
-    public int insertOrganization(OrganizationInfo organizationInfo) {
-        if (null == organizationInfo) {
-            return 0;
+    public int insertOrganization(Organization organization) {
+        notNull(organization, "Organization is null.");
+
+        //mspInfo
+        Msp msp = organization.getMsp();
+        if (null != msp) {
+            mspDao.insertMsp(msp);
         }
-        Organization organization = new Organization();
-        organization.setId(organizationInfo.getId());
-        organization.setName(organizationInfo.getName());
-        organization.setType(organizationInfo.getType().getOper());
-        organization.setMspId(organizationInfo.getMspId());
-        organization.setTlsEnable(organizationInfo.getTlsEnable());
 
-        OrganizationCrypto crypto = organizationInfo.getCrypto();
-        if (null != crypto) {
-            //mspInfo
-            String mspTabId = generateMspId(organizationInfo.getId());
-            if(1 == mspDao.insertOrganizationMsp(mspTabId, crypto.getMsp())) {
-                organization.setMspTabId(mspTabId);
-            }
+        //Ca
+        Ca ca = organization.getCa();
+        if (null == ca) {
+            throw new IdentityException()
+        }else {
+            caDao.insertSignRootCa(ca);
+        }
 
-            //tlsCa
-            String caId = generateCaId(organizationInfo.getId());
-            if(1 == caDao.insertSignRootCa(caId, crypto.getCa())) {
-                organization.setCaId(caId);
-            }
-
-            //tlsca
-            String tlsCaId = generateTlsCaId(organizationInfo.getId());
-            if(1 == caDao.insertTlsRootCa(tlsCaId, crypto.getTlsca())){
-                organization.setTlsCaId(tlsCaId);
-            }
+        //tlsca
+        Ca tlsCa = organization.getTlsCa();
+        if (organization.getTlsEnable() && null == tlsCa) {
+            throw new IdentityException()
+        } else {
+            caDao.insertTlsRootCa(organization.getTlsCa());
         }
 
         try {
@@ -83,64 +71,49 @@ public class OrganizationDao {
     }
 
     @Transactional
-    public int updateOrgainzation(OrganizationInfo organizationInfo) {
-        if (null == organizationInfo) {
-            return 0;
+    public int updateOrganization(Organization organization) {
+        notNull(organization, "Organization is null.");
+
+        //mspInfo
+        Msp msp = organization.getMsp();
+        if (null != msp) {
+            mspDao.updateMsp(msp);
         }
 
-        OrganizationCrypto crypto = organizationInfo.getCrypto();
-        if (null != crypto) {
-            //mspInfo
-            MspInfo msp = crypto.getMsp();
-            if (null != msp) {
-                mspDao.updateOrganizationMsp(generateMspId(organizationInfo.getId()), msp);
-            }
-
-            //tlsCa
-            CaInfo ca = crypto.getCa();
-            if (null != ca) {
-                caDao.updateSignRootCa(generateCaId(organizationInfo.getId()), ca);
-            }
-
-            //tlsca
-            CaInfo tlsca = crypto.getTlsca();
-            if (null != tlsca) {
-                caDao.updateTlsRootCa(generateTlsCaId(organizationInfo.getId()), tlsca);
-            }
+        //tlsCa
+        Ca ca = organization.getCa();
+        if (null != ca) {
+            caDao.updateSignRootCa(ca);
         }
 
-        //organization
-        Organization organization = new Organization();
-        organization.setId(organizationInfo.getId());
-        organization.setName(organizationInfo.getName());
-        organization.setType(organizationInfo.getType().getOper());
-        organization.setMspId(organizationInfo.getMspId());
-        organization.setTlsEnable(organizationInfo.getTlsEnable());
-        return organizationMapper.updateByPrimaryKey(organization);
+        //tlsca
+        Ca tlsca = organization.getTlsCa();
+        if (null != tlsca) {
+            caDao.updateTlsRootCa(tlsca);
+        }
+
+        return organizationMapper.updateByPrimaryKeySelective(organization);
     }
 
     @Transactional
-    public int deleteOrganization() {
-        OrganizationInfo organizationBaseInfo = getOrganizationBaseInfo();
-        if (null == organizationBaseInfo) {
-            return 0;
+    public int deleteOrganization(String orgId) {
+        Organization organization = getOrganization(orgId);
+        if (null == organization) {
+            throw new IdentityException();
         }
-        String id = organizationBaseInfo.getId();
-        mspDao.deleteMspById(generateMspId(id));
-        caDao.deleteCa(generateCaId(id));
-        caDao.deleteCa(generateTlsCaId(id));
-        return organizationMapper.deleteByPrimaryKey(id);
-    }
 
-    private String generateMspId(String organizationId) {
-        return organizationId + "-org-msp";
-    }
-
-    private String generateCaId(String organizationId) {
-        return organizationId + "-ca";
-    }
-
-    private String generateTlsCaId(String organizaationId) {
-        return organizaationId + "-tls-ca";
+        Msp msp = organization.getMsp();
+        if (null != msp) {
+            mspDao.deleteMspById(msp.getId());
+        }
+        Ca ca = organization.getCa();
+        if (null != ca) {
+            caDao.deleteCa(ca.getId());
+        }
+        Ca tlsCa = organization.getTlsCa();
+        if (null != tlsCa) {
+            caDao.deleteCa(tlsCa.getId());
+        }
+        return organizationMapper.deleteByPrimaryKey(orgId);
     }
 }

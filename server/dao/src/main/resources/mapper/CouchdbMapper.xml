@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.CouchdbMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.Couchdb" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.CouchdbMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.node.CouchdbInfo" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="port" property="port" jdbcType="INTEGER" />
@@ -23,7 +23,7 @@
     delete from couchdb
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.Couchdb" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.node.CouchdbInfo" >
     insert into couchdb (id, ip, port, 
       container_id, msp_id, tls_enable, 
       double_verify)
@@ -31,7 +31,7 @@
       #{containerId,jdbcType=VARCHAR}, #{mspId,jdbcType=VARCHAR}, #{tlsEnable,jdbcType=BIT}, 
       #{doubleVerify,jdbcType=BIT})
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.Couchdb" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.node.CouchdbInfo" >
     insert into couchdb
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -80,7 +80,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.Couchdb" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.node.CouchdbInfo" >
     update couchdb
     <set >
       <if test="ip != null" >
@@ -104,7 +104,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.Couchdb" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.node.CouchdbInfo" >
     update couchdb
     set ip = #{ip,jdbcType=VARCHAR},
       port = #{port,jdbcType=INTEGER},

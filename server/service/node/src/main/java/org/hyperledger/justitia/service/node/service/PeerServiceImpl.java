@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.service.node.service;
 
-import org.hyperledger.justitia.service.face.node.PeerService;
+import org.hyperledger.justitia.common.face.service.node.PeerService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.farbic.data;
 
-import org.hyperledger.justitia.service.face.fabric.bean.ChannelMember;
+import org.hyperledger.justitia.common.bean.channel.ChannelMember;
 
 import java.util.HashSet;
 import java.util.List;

@@ -1,18 +1,15 @@
 package org.hyperledger.justitia.identity.service.msp;
 
-import org.hyperledger.justitia.common.CertFileHelper;
+import org.hyperledger.justitia.common.RequestContext;
+import org.hyperledger.justitia.common.bean.identity.FabricUser;
+import org.hyperledger.justitia.common.bean.identity.Organization;
+import org.hyperledger.justitia.common.bean.identity.crypto.Msp;
+import org.hyperledger.justitia.common.bean.node.Node;
 import org.hyperledger.justitia.common.utils.StringUtils;
-import org.hyperledger.justitia.common.utils.file.file.FileUtils;
+import org.hyperledger.justitia.common.utils.file.FileUtils;
 import org.hyperledger.justitia.identity.exception.MspException;
-import org.hyperledger.justitia.service.face.identity.NodeService;
-import org.hyperledger.justitia.service.face.identity.OrganizationService;
-import org.hyperledger.justitia.service.face.identity.bean.NodeInfo;
-import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
-import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.MspInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.NodeCrypto;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.OrganizationCrypto;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.TlsInfo;
+import org.hyperledger.justitia.common.face.service.identity.NodeService;
+import org.hyperledger.justitia.common.face.service.identity.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,20 +31,19 @@ public class MspHelper {
     }
 
 
-    public String generateOrgMsp(String saveDir, String organizationId) throws IOException, MspException {
+    public String generateOrgMsp(String saveDir) throws IOException, MspException {
         String mspDir = saveDir + File.separator + "msp";
         FileUtils.makeDirectory(mspDir);
-        OrganizationInfo organizationInfoWithCryptoMsp = organizationService.getOrganizationInfo();
-        if (null == organizationInfoWithCryptoMsp) {
-            throw new MspException(String.format("There is no organization with id %s.", organizationId));
+        Organization organization = organizationService.getOrganizationInfo();
+        if (null == organization) {
+            throw new MspException(String.format("There is no organization with id %s.", RequestContext.getOrganizationId()));
         }
-        OrganizationCrypto crypto = organizationInfoWithCryptoMsp.getCrypto();
-        if (null == crypto) {
-            throw new MspException(String.format("Crypto information is null when organization id is %s.", organizationId));
+        Msp msp = organization.getMsp();
+        if (null == msp) {
+            throw new IllegalArgumentException("Crypto information of organization is null.");
         }
-
         try {
-            writeOrgMsp(mspDir, crypto.getMsp(), organizationInfoWithCryptoMsp.getTlsEnable());
+            writeOrgMsp(mspDir, msp);
         } catch (Throwable  e) {
             FileUtils.delete(mspDir);
             throw e;
@@ -55,26 +51,18 @@ public class MspHelper {
         return mspDir;
     }
 
-    private void writeOrgMsp(String mspDir, MspInfo msp, boolean tlsEnable) throws IOException {
-        if (msp == null) {
-            throw new MspException("MSP information is null.");
-        }
-
+    private void writeOrgMsp(String output, Msp msp) throws IOException {
         //admincerts
-        writeAdminCerts(mspDir, msp.getAdminCerts());
+        writeAdminInfo(output, msp.getAdminUsers());
         //cacerts
-        writeRootCaCerts(mspDir, msp.getCaCerts(), "cacerts");
+        writeRootCaCerts(output, msp.getCaCerts(), "cacerts");
         //intermediatecerts
-        writeIntermediateCaCerts(mspDir, msp.getIntermediateCerts(), "intermediatecerts");
-
-        // fixme crls
-
-//        if (tlsEnable) {
-            //tlscacerts
-            writeRootCaCerts(mspDir, msp.getTlsCaCerts(), "tlscacerts");
-            //tlsintermediatecerts
-            writeIntermediateCaCerts(mspDir, msp.getTlsIntermediateCerts(), "tlsintermediatecerts");
-//        }
+        writeIntermediateCaCerts(output, msp.getIntermediateCertsAsList(), "intermediatecerts");
+        //tlscacerts
+        writeRootCaCerts(output, msp.getTlsCaCerts(), "tlscacerts");
+        //tlsintermediatecerts
+        writeIntermediateCaCerts(output, msp.getTlsIntermediateCertsAsList(), "tlsintermediatecerts");
+        // todo crls
     }
 
     /**
@@ -83,84 +71,70 @@ public class MspHelper {
      * @throws CertificateException     证书文件解析是失败
      * @throws NoSuchAlgorithmException 证书文件解析失败
      */
-    public String generateNodeMsp(String saveDir, String nodeId, NodeInfo.NodeType nodeType) throws IOException,
+    public String generateNodeMsp(String saveDir, String nodeId, Node.NodeType nodeType) throws IOException,
             CertificateException, NoSuchAlgorithmException, MspException {
-        NodeInfo nodeInfo;
-        if (NodeInfo.NodeType.PEER == nodeType) {
-            nodeInfo = nodeService.getPeerInfo(nodeId);
-        } else if (NodeInfo.NodeType.ORDERER == nodeType){
-            nodeInfo = nodeService.getOrdererInfo(nodeId);
+        Node node;
+        if (Node.NodeType.PEER == nodeType) {
+            node = nodeService.getPeerInfo(nodeId);
+        } else if (Node.NodeType.ORDERER == nodeType){
+            node = nodeService.getOrdererInfo(nodeId);
         } else {
             throw new MspException(String.format("Illegal read type %s.", nodeType.getOper()));
         }
-
-        if (null == nodeInfo) {
+        if (null == node) {
             throw new MspException(String.format("There is no %s with id %s.", nodeType.getOper(), nodeId));
         }
-
-        NodeCrypto crypto = nodeInfo.getCrypto();
-        if (null == crypto) {
-            throw new MspException(String.format("Crypto information is null when read id is %s and type is  %s.", nodeId, nodeType.getOper()));
+        Msp msp = node.getMsp();
+        if (null == msp) {
+            throw new MspException(String.format("Crypto information of node is null when id is %s.", node.getId()));
         }
 
         //msp
         String mspDir = saveDir + File.separator + "msp";
         FileUtils.makeDirectory(mspDir);
         try {
-            writeNodeMsp(mspDir, crypto.getMspInfo(), nodeInfo.getTlsEnable());
+            writeNodeMsp(mspDir, msp);
         }catch (Throwable  e) {
             FileUtils.delete(mspDir);
             throw e;
         }
 
-
         //tls
         String tlsDir = saveDir + File.separator + "tls";
         FileUtils.makeDirectory(tlsDir);
-        TlsInfo tls = crypto.getTlsInfo();
-        if (null != tls) {
-            FileUtils.writeStringToFile(tlsDir, tls.getCa(), "ca.crt");
-            FileUtils.writeStringToFile(tlsDir, tls.getCert(), "server.crt");
-            FileUtils.writeStringToFile(tlsDir, tls.getKey(), "server.key");
-        }
+        FileUtils.writeStringToFile(tlsDir, msp.getTlsCaCerts(), "ca.crt");
+        FileUtils.writeStringToFile(tlsDir, msp.getTlsCerts(), "server.crt");
+        FileUtils.writeStringToFile(tlsDir, msp.getTlsKey(), "server.key");
 
         return saveDir;
     }
 
-    private void writeNodeMsp(String mspDir, MspInfo msp, boolean tlsEnable) throws IOException, CertificateException, NoSuchAlgorithmException {
-        if (null == msp) {
-            throw new MspException("MSP information is null.");
-        }
+    private void writeNodeMsp(String output, Msp msp) throws IOException, CertificateException, NoSuchAlgorithmException {
         //admincerts
-        writeAdminCerts(mspDir, msp.getAdminCerts());
+        writeAdminInfo(output, msp.getAdminUsers());
         //cacerts
-        writeRootCaCerts(mspDir, msp.getCaCerts(), "cacerts");
+        writeRootCaCerts(output, msp.getCaCerts(), "cacerts");
         //intermediatecerts
-        writeIntermediateCaCerts(mspDir, msp.getIntermediateCerts(), "intermediatecerts");
-
+        writeIntermediateCaCerts(output, msp.getIntermediateCertsAsList(), "intermediatecerts");
         //keystore
-        writeKeyStore(mspDir, msp.getSignCerts(), msp.getKeyStore());
+        writeKeyStore(output, msp.getSignCerts(), msp.getKeyStore());
         //signcerts
-        writeSignCerts(mspDir, msp.getSignCerts());
-
-        //fixme configFile
-        //fixme crls
-
-        if (tlsEnable) {
-            //tlscacerts
-            writeRootCaCerts(mspDir, msp.getTlsCaCerts(), "tlscacerts");
-            //tlsintermediatecerts
-            writeIntermediateCaCerts(mspDir, msp.getTlsIntermediateCerts(), "tlsintermediatecerts");
-        }
+        writeSignCerts(output, msp.getSignCerts());
+        //tlscacerts
+        writeRootCaCerts(output, msp.getTlsCaCerts(), "tlscacerts");
+        //tlsintermediatecerts
+        writeIntermediateCaCerts(output, msp.getTlsIntermediateCertsAsList(), "tlsintermediatecerts");
+        //todo configFile
+        //todo crls
     }
 
-    private void writeAdminCerts(String mspDir, List<FabricUserInfo> adminCerts) throws IOException {
+    private void writeAdminInfo(String mspDir, List<FabricUser> adminUsers) throws IOException {
         boolean existsAdmin = false;
-        if (null != adminCerts) {
+        if (null != adminUsers) {
             String admincertsPath = mspDir + File.separator + "admincerts";
             FileUtils.makeDirectory(admincertsPath);
-            for (FabricUserInfo user : adminCerts) {
-                String signCerts = user.getCrypto().getMspInfo().getSignCerts();
+            for (FabricUser user : adminUsers) {
+                String signCerts = user.getMsp().getSignCerts();
                 if (StringUtils.isNotEmpty(signCerts)) {
                     String certFileName = user.getId() + "-cert.pem";
                     FileUtils.writeStringToFile(admincertsPath, signCerts, certFileName);

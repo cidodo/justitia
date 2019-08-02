@@ -1,16 +1,18 @@
 package org.hyperledger.justitia.identity.dao;
 
-import org.hyperledger.justitia.dao.bean.Orderer;
-import org.hyperledger.justitia.dao.mapper.OrdererMapper;
-import org.hyperledger.justitia.identity.dao.format.OrdererFormater;
+import org.hyperledger.justitia.common.bean.identity.crypto.Msp;
+import org.hyperledger.justitia.common.bean.node.OrdererInfo;
+import org.hyperledger.justitia.common.face.dao.mapper.OrdererMapper;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.service.face.identity.bean.OrdererInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.NodeCrypto;
+import org.hyperledger.justitia.identity.exception.IdentityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+
+import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notEmpty;
+import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notNull;
 
 @Component
 public class OrdererDao {
@@ -24,83 +26,58 @@ public class OrdererDao {
     }
 
     public int insertOrderer(OrdererInfo ordererInfo) {
-        if (null == ordererInfo) {
-            return 0;
-        }
+        notNull(ordererInfo, "Orderer information is null.");
 
         //mspInfo
-        NodeCrypto crypto = ordererInfo.getCrypto();
-        String mspId = null;
-        if (null != crypto) {
-            mspId = generateMspId(ordererInfo.getId());
-            if (1 != mspDao.insertOrdererMsp(mspId, crypto.getMspInfo(), crypto.getTlsInfo())) {
-                mspId = null;
-            }
+        Msp msp = ordererInfo.getMsp();
+        if (null != msp) {
+            mspDao.insertMsp(msp);
         }
 
-        Orderer orderer = OrdererFormater.ordererInfo2Orderre(ordererInfo, mspId);
-
-        try{
-            return ordererMapper.insertSelective(orderer);
+        try {
+            return ordererMapper.insertSelective(ordererInfo);
         } catch (DuplicateKeyException e) {
-            String msg = String.format("The %s with key %s is already present.", "orderer", orderer.getId());
+            String msg = String.format("The %s with key %s is already present.", "orderer", ordererInfo.getId());
             throw new IdentityDuplicateKeyException(msg);
         }
     }
 
     public int updateOrderer(OrdererInfo ordererInfo) {
-        if (null == ordererInfo) {
-            return 0;
-        }
+        notNull(ordererInfo, "Orderer information is null.");
 
         //mspInfo
-        NodeCrypto crypto = ordererInfo.getCrypto();
-        if (null != crypto) {
-            mspDao.updateOrdererMsp(generateMspId(ordererInfo.getId()), crypto.getMspInfo(), crypto.getTlsInfo());
+        Msp msp = ordererInfo.getMsp();
+        if (null != msp) {
+            mspDao.updateMsp(msp);
         }
 
-        Orderer orderer = OrdererFormater.ordererInfo2Orderre(ordererInfo, null);
-        return ordererMapper.updateByPrimaryKey(orderer);
+        return ordererMapper.updateByPrimaryKeySelective(ordererInfo);
     }
 
     public int deleteOrderer(String id) {
-        //delete mspInfo
-        mspDao.deleteMspById(generateMspId(id));
-        //delete orderer
+        notEmpty(id, "Orderer id is empty.");
+
+        OrdererInfo orderer = getOrderer(id);
+        if (null == orderer) {
+            throw new IdentityException();
+        }
+
+
+        Msp msp = orderer.getMsp();
+        if (null != msp) {
+            mspDao.deleteMspById(msp.getId());
+        }
         return ordererMapper.deleteByPrimaryKey(id);
     }
 
     public List<OrdererInfo> selectOrderers() {
-        List<Orderer> orderers = ordererMapper.selectOrderers();
-        return OrdererFormater.orderers2OrderersInfo(orderers);
+        return ordererMapper.selectOrderersWithCrypto();
     }
 
-    public List<OrdererInfo> selectOrderersWithTls() {
-        List<Orderer> orderers = ordererMapper.selectOrderersWithTls();
-        return OrdererFormater.orderers2OrderersInfo(orderers);
-    }
-
-    public List<OrdererInfo> selectOrderersWithCrypto() {
-        List<Orderer> orderers = ordererMapper.selectOrderersWithCrypto();
-        return OrdererFormater.orderers2OrderersInfo(orderers);
-    }
 
     public OrdererInfo getOrderer(String id) {
-        Orderer orderer = ordererMapper.getOrderer(id);
-        return OrdererFormater.orderer2OrdererInfo(orderer);
+        notEmpty(id, "Orderer id is empty.");
+        return ordererMapper.getOrdererWithCrypto(id);
     }
 
-    public OrdererInfo getOrdererWithTls(String id) {
-        Orderer orderer = ordererMapper.getOrdererWithTls(id);
-        return OrdererFormater.orderer2OrdererInfo(orderer);
-    }
-
-    public OrdererInfo getOrdererWithCrypto(String id) {
-        Orderer orderer = ordererMapper.getOrdererWithCrypto(id);
-        return OrdererFormater.orderer2OrdererInfo(orderer);
-    }
-
-    private String generateMspId(String ordererId) {
-        return ordererId + "-orderer-msp";
-    }
 }

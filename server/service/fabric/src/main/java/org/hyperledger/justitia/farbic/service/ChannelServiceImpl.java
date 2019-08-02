@@ -8,7 +8,7 @@ import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.ProposalException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.justitia.farbic.exception.FabricServiceException;
-import org.hyperledger.justitia.service.face.fabric.ChannelService;
+import org.hyperledger.justitia.common.face.service.fabric.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

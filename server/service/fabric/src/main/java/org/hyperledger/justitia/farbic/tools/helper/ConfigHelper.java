@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.farbic.tools.helper;
 
-import org.hyperledger.justitia.common.utils.file.file.YamlFileUtils;
+import org.hyperledger.justitia.common.utils.file.YamlFileUtils;
 import org.hyperledger.justitia.farbic.exception.FabricToolsConfigException;
 
 import java.io.File;

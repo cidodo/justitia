@@ -1,8 +1,7 @@
 package org.hyperledger.justitia.scheduler.controller.identity.format;
 
-import org.hyperledger.justitia.service.face.identity.bean.*;
+import org.hyperledger.justitia.common.bean.identity.*;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.*;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.*;
 import org.hyperledger.justitia.scheduler.exception.UploadFileException;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,12 +65,12 @@ public class FormatData {
         nodeInfo.setCrypto(crypto);
     }
 
-    public static FabricUserInfo formatUser(SetUserBean userBean) {
+    public static FabricUser formatUser(SetUserBean userBean) {
         if (null == userBean) {
             return null;
         }
 
-        FabricUserInfo userInfo = new FabricUserInfo();
+        FabricUser userInfo = new FabricUser();
         userInfo.setId(userBean.getUserName());
         userInfo.setAdmin(userBean.getAdmin());
         userInfo.setTag(null);
@@ -120,12 +119,12 @@ public class FormatData {
         return mspInfo;
     }
 
-    public static OrganizationInfo formatOrganization(SetOrganizationBean organizationBean) {
+    public static Organization formatOrganization(SetOrganizationBean organizationBean) {
         if (null == organizationBean) {
             return null;
         }
 
-        OrganizationInfo organizationInfo = new OrganizationInfo();
+        Organization organizationInfo = new Organization();
         organizationInfo.setId(organizationBean.getName());
         organizationInfo.setName(organizationBean.getName());
         organizationInfo.setMspId(organizationBean.getMspId());

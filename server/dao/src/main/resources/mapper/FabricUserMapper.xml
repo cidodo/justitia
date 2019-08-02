@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="org.hyperledger.justitia.dao.mapper.FabricUserMapper" >
-  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.dao.bean.FabricUser" >
+<mapper namespace="org.hyperledger.justitia.common.face.dao.mapper.FabricUserMapper" >
+  <resultMap id="BaseResultMap" type="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
     <result column="admin" property="admin" jdbcType="BIT" />
     <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.dao.bean.FabricUser" extends="BaseResultMap" >
+  <resultMap id="ResultMapWithBLOBs" type="org.hyperledger.justitia.common.bean.identity.FabricUser" extends="BaseResultMap" >
     <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
@@ -28,13 +28,13 @@
     delete from fabric_user
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+  <insert id="insert" parameterType="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     insert into fabric_user (id, organization_id, admin, 
       msp_id, tag)
     values (#{id,jdbcType=VARCHAR}, #{organizationId,jdbcType=VARCHAR}, #{admin,jdbcType=BIT}, 
       #{mspId,jdbcType=VARCHAR}, #{tag,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+  <insert id="insertSelective" parameterType="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     insert into fabric_user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -71,7 +71,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+  <update id="updateByPrimaryKeySelective" parameterType="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     update fabric_user
     <set >
       <if test="organizationId != null" >
@@ -89,7 +89,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     update fabric_user
     set organization_id = #{organizationId,jdbcType=VARCHAR},
       admin = #{admin,jdbcType=BIT},
@@ -97,7 +97,7 @@
       tag = #{tag,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.dao.bean.FabricUser" >
+  <update id="updateByPrimaryKey" parameterType="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     update fabric_user
     set organization_id = #{organizationId,jdbcType=VARCHAR},
       admin = #{admin,jdbcType=BIT},
@@ -120,7 +120,7 @@
     </sql>
 
 
-  <resultMap id="MspInfo" type="org.hyperledger.justitia.dao.bean.Msp">
+  <resultMap id="MspInfo" type="org.hyperledger.justitia.common.bean.identity.crypto.Msp">
     <result column="admin_users_id" property="adminUsersId" jdbcType="LONGVARCHAR" />
     <result column="ca_certs" property="caCerts" jdbcType="LONGVARCHAR" />
     <result column="intermediate_certs" property="intermediateCerts" jdbcType="LONGVARCHAR" />
@@ -134,7 +134,7 @@
     <result column="config_file" property="configFile" jdbcType="LONGVARCHAR" />
   </resultMap>
 
-  <resultMap id="UserBase" type="org.hyperledger.justitia.dao.bean.FabricUser" >
+  <resultMap id="UserBase" type="org.hyperledger.justitia.common.bean.identity.FabricUser" >
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
     <result column="admin" property="admin" jdbcType="BIT" />
@@ -142,13 +142,13 @@
     <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
   </resultMap>
 
-  <resultMap id="FabricUserWithMsp" type="org.hyperledger.justitia.dao.bean.FabricUser">
+  <resultMap id="FabricUserWithMsp" type="org.hyperledger.justitia.common.bean.identity.FabricUser">
     <id column="id" property="id" jdbcType="VARCHAR" />
     <result column="organization_id" property="organizationId" jdbcType="VARCHAR" />
     <result column="admin" property="admin" jdbcType="BIT" />
     <result column="msp_id" property="mspId" jdbcType="VARCHAR" />
     <result column="tag" property="tag" jdbcType="LONGVARCHAR" />
-    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.dao.bean.Msp" select="getMsp"/>
+    <collection column="{mspId = msp_id}" property="msp" ofType="org.hyperledger.justitia.common.bean.identity.crypto.Msp" select="getMsp"/>
   </resultMap>
 
   <select id="selectUsersBase" resultMap="UserBase">

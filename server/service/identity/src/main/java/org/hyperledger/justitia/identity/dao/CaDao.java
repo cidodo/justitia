@@ -1,12 +1,13 @@
 package org.hyperledger.justitia.identity.dao;
 
-import org.hyperledger.justitia.dao.bean.Ca;
-import org.hyperledger.justitia.dao.mapper.CaMapper;
+import org.hyperledger.justitia.common.bean.identity.crypto.Ca;
+import org.hyperledger.justitia.common.face.dao.mapper.CaMapper;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.CaInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
+
+import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.*;
 
 @Component
 public class CaDao {
@@ -17,21 +18,14 @@ public class CaDao {
         this.caMapper = caMapper;
     }
 
-    public int insertSignRootCa(String id, CaInfo caInfo) {
-        if (null == id || null == caInfo) {
-            return 0;
-        }
-
-        Ca ca = formatRootCa(id, caInfo);
+    public int insertSignRootCa(Ca ca) {
+        notNull(ca, "Ca is null.");
         ca.setCaType("sign");
         return insertCa(ca);
     }
 
-    public int insertTlsRootCa(String id, CaInfo caInfo) {
-        if (null == id || null == caInfo) {
-            return 0;
-        }
-        Ca ca = formatRootCa(id, caInfo);
+    public int insertTlsRootCa(Ca ca) {
+        notNull(ca, "Ca is null.");
         ca.setCaType("tls");
         return insertCa(ca);
     }
@@ -45,33 +39,14 @@ public class CaDao {
         }
     }
 
-    public int updateSignRootCa(String id, CaInfo caInfo) {
-        if (null == id || null == caInfo) {
-            return 0;
-        }
-        Ca ca = formatRootCa(id, caInfo);
+    public int updateSignRootCa(Ca ca) {
+        notNull(ca, "Ca is null.");
         return caMapper.updateByPrimaryKeySelective(ca);
     }
 
-    public int updateTlsRootCa(String id, CaInfo caInfo) {
-        if (null == id || null == caInfo) {
-            return 0;
-        }
-        Ca ca = formatRootCa(id, caInfo);
+    public int updateTlsRootCa(Ca ca) {
+        notNull(ca, "Ca is null.");
         return caMapper.updateByPrimaryKeySelective(ca);
-    }
-
-    private Ca formatRootCa(String id, CaInfo caInfo) {
-        Ca ca = new Ca();
-        ca.setId(id);
-        ca.setName(id);
-        ca.setRoot(true);
-        ca.setParent(null);
-        ca.setCaType(null);
-        ca.setCaServer(null);
-        ca.setCert(caInfo.getCert());
-        ca.setKey(caInfo.getKey());
-        return ca;
     }
 
     public int deleteCa(String id) {

@@ -1,14 +1,14 @@
 package org.hyperledger.justitia.identity.dao;
 
-import org.hyperledger.justitia.dao.bean.Msp;
-import org.hyperledger.justitia.dao.mapper.MspMapper;
-import org.hyperledger.justitia.identity.dao.format.MspFormater;
+import org.hyperledger.justitia.common.bean.identity.crypto.Msp;
+import org.hyperledger.justitia.common.face.dao.mapper.MspMapper;
 import org.hyperledger.justitia.identity.exception.IdentityDuplicateKeyException;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.MspInfo;
-import org.hyperledger.justitia.service.face.identity.bean.crypto.TlsInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
+
+import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notEmpty;
+import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notNull;
 
 @Component
 public class MspDao {
@@ -19,85 +19,23 @@ public class MspDao {
         this.mspMapper = mspMapper;
     }
 
-    public int insertOrganizationMsp(String id, MspInfo mspInfo) {
-        if (null == id || null == mspInfo) {
-            return 0;
-        }
-        Msp msp = MspFormater.mspInfo2Msp(id, mspInfo);
-        return insertMsp(msp);
-    }
-
-    public int updateOrganizationMsp(String id, MspInfo mspInfo) {
-        if (null == id || null == mspInfo) {
-            return 0;
-        }
-        Msp msp = MspFormater.mspInfo2Msp(id, mspInfo);
-        return updateMsp(msp);
-    }
-
-    public int insertPeerMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        return insertNodeMsp(id, mspInfo, tlsInfo);
-    }
-
-    public int updatePeerMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        return updateNodeMsp(id, mspInfo, tlsInfo);
-    }
-
-    public int insertOrdererMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        return insertNodeMsp(id, mspInfo, tlsInfo);
-    }
-
-    public int updateOrdererMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        return updateNodeMsp(id, mspInfo, tlsInfo);
-    }
-
-    private int insertNodeMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        if (null == id) {
-            return 0;
-        }
-        Msp msp = MspFormater.mspInfo2Msp(id, mspInfo, tlsInfo);
-        return insertMsp(msp);
-    }
-
-    private int updateNodeMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        if (null == id || (null == mspInfo && null == tlsInfo)) {
-            return 0;
-        }
-        Msp msp = MspFormater.mspInfo2Msp(id, mspInfo, tlsInfo);
-        return updateMsp(msp);
-    }
-
-    public int insertUserMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        if (null == id) {
-            return 0;
-        }
-        Msp msp = MspFormater.mspInfo2Msp(id, mspInfo, tlsInfo);
-        return insertMsp(msp);
-    }
-
-    public int updateUserMsp(String id, MspInfo mspInfo, TlsInfo tlsInfo) {
-        if (null == id) {
-            return 0;
-        }
-        Msp msp = MspFormater.mspInfo2Msp(id, mspInfo, tlsInfo);
-        return updateMsp(msp);
-    }
-
-
-    private int insertMsp(Msp msp) {
+    public int insertMsp(Msp msp) {
+        notNull(msp, "Msp is null.");
         try{
-             return mspMapper.insertSelective(msp);
+            return mspMapper.insertSelective(msp);
         } catch (DuplicateKeyException e) {
             String msg = String.format("The %s with key %s is already present.", "msp", msp.getId());
             throw new IdentityDuplicateKeyException(msg);
         }
     }
 
-    private int updateMsp(Msp msp) {
+    public int updateMsp(Msp msp) {
+        notNull(msp, "Msp is null.");
         return mspMapper.updateByPrimaryKeySelective(msp);
     }
 
     public int deleteMspById(String id) {
+        notEmpty(id, "Id is empty.");
         return mspMapper.deleteByPrimaryKey(id);
     }
 

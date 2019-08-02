@@ -14,14 +14,15 @@
 
 package org.hyperledger.justitia.identity.service;
 
+import org.hyperledger.justitia.common.bean.identity.FabricUser;
+import org.hyperledger.justitia.common.bean.identity.Organization;
+import org.hyperledger.justitia.common.bean.node.OrdererInfo;
+import org.hyperledger.justitia.common.bean.node.PeerInfo;
 import org.hyperledger.justitia.identity.dao.FabricUserDao;
 import org.hyperledger.justitia.identity.dao.OrdererDao;
 import org.hyperledger.justitia.identity.dao.OrganizationDao;
 import org.hyperledger.justitia.identity.dao.PeerDao;
-import org.hyperledger.justitia.service.face.identity.bean.FabricUserInfo;
-import org.hyperledger.justitia.service.face.identity.bean.OrdererInfo;
-import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
-import org.hyperledger.justitia.service.face.identity.bean.PeerInfo;
+import org.hyperledger.justitia.identity.exception.IdentityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,9 +31,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class IdentityConfig {
-    private static OrganizationInfo organization = null;
-    private static final Map<String, FabricUserInfo> adminUsers = new ConcurrentHashMap<>();
-    private static final Map<String, FabricUserInfo> users = new ConcurrentHashMap<>();
+    private static final Map<String, Organization> organizations = new ConcurrentHashMap<>();
+    private static final Map<String, FabricUser> adminUsers = new ConcurrentHashMap<>();
+    private static final Map<String, FabricUser> users = new ConcurrentHashMap<>();
     private static final Map<String, OrdererInfo> orderers = new ConcurrentHashMap<>();
     private static final Map<String, PeerInfo> peers = new ConcurrentHashMap<>();
 
@@ -49,47 +50,58 @@ public class IdentityConfig {
         this.ordererDao = ordererDao;
     }
 
-    public String getMspId() {
-        OrganizationInfo organization = getOrganization();
-        if (null == organization) {
-            return null;
+    public Organization getOrganization() {
+        List<Organization> organizations = organizationDao.selectOrganization();
+        if (null == organizations || organizations.isEmpty()) {
+            throw new IdentityException()
         }
-        return organization.getMspId();
+        for (Organization organization: organizations) {
+            IdentityConfig.organizations.put(organization.getId(), organization);
+        }
+        return organizations.get(0);
     }
 
-    public OrganizationInfo getOrganization() {
-        if (null == organization) {
-            organization = organizationDao.getOrganizationInfoWithCrypto();
-        }
-        return organization;
-    }
-
-    public void setOrganization(OrganizationInfo organizationInfo) {
-        if (1 == organizationDao.insertOrganization(organizationInfo)) {
-            IdentityConfig.organization = organizationInfo;
-        }
-    }
-
-    public void updateOrganization(OrganizationInfo organizationInfo) {
-        if (1 == organizationDao.updateOrgainzation(organizationInfo)) {
-            IdentityConfig.organization = organizationInfo;
+    public Organization getOrganization(String orgId) {
+        if (IdentityConfig.organizations.containsKey(orgId)) {
+            return IdentityConfig.organizations.get(orgId);
+        } else {
+            Organization organization = organizationDao.getOrganization(orgId);
+            if (null == organization) {
+                throw new IdentityException()
+            }
+            IdentityConfig.organizations.put(organization.getId(), organization);
+            return organization;
         }
     }
 
-    public void deleteOrganization() {
-        if (1 == organizationDao.deleteOrganization()) {
-            IdentityConfig.organization = null;
+    public void setOrganization(Organization organization) {
+        if (1 == organizationDao.insertOrganization(organization)) {
+            IdentityConfig.organizations.put(organization.getId(), organization);
         }
     }
 
-    public List<FabricUserInfo> getUsers() {
-        List<FabricUserInfo> fabricUsersInfo = fabricUserDao.selectUser();
+    public void updateOrganization(Organization organization) {
+        if (1 == organizationDao.updateOrganization(organization)) {
+            IdentityConfig.organizations.put(organization.getId(), organization);
+        }
+    }
+
+    public void deleteOrganization(String orgId) {
+        if (1 == organizationDao.deleteOrganization(orgId)) {
+            IdentityConfig.organizations.remove(orgId);
+        }
+    }
+
+    public List<FabricUser> getUsers(String orgId) {
+        Organization organization = getOrganization(orgId);
+
+        List<FabricUser> fabricUsersInfo = fabricUserDao.selectUser();
         synchronized (this) {
             adminUsers.clear();
             users.clear();
             if (null != fabricUsersInfo) {
                 String mspId = getMspId();
-                for (FabricUserInfo fabricUserInfo : fabricUsersInfo) {
+                for (FabricUser fabricUserInfo : fabricUsersInfo) {
                     fabricUserInfo.setMspId(mspId);
                     if (fabricUserInfo.getAdmin()) {
                         adminUsers.put(fabricUserInfo.getId(), fabricUserInfo);
@@ -101,14 +113,14 @@ public class IdentityConfig {
         return fabricUsersInfo;
     }
 
-    public FabricUserInfo getAdminUser() {
+    public FabricUser getAdminUser() {
         if (adminUsers.isEmpty()) {
-            List<FabricUserInfo> adminUsersInfo = fabricUserDao.selectAdminsUser();
+            List<FabricUser> adminUsersInfo = fabricUserDao.selectAdminsUser();
             synchronized (adminUsers) {
                 adminUsers.clear();
                 if (null != adminUsersInfo) {
                     String mspId = getMspId();
-                    for (FabricUserInfo adminUserInfo : adminUsersInfo) {
+                    for (FabricUser adminUserInfo : adminUsersInfo) {
                         adminUserInfo.setMspId(mspId);
                         adminUsers.put(adminUserInfo.getId(), adminUserInfo);
                     }
@@ -122,9 +134,9 @@ public class IdentityConfig {
         }
     }
 
-    public FabricUserInfo getUser(String userId) {
+    public FabricUser getUser(String userId) {
         if (!users.containsKey(userId)) {
-            FabricUserInfo fabricUserInfo = fabricUserDao.getUser(userId);
+            FabricUser fabricUserInfo = fabricUserDao.getUser(userId);
             if (null != fabricUserInfo) {
                 fabricUserInfo.setMspId(getMspId());
                 users.put(fabricUserInfo.getId(), fabricUserInfo);
@@ -133,11 +145,11 @@ public class IdentityConfig {
         return users.getOrDefault(userId, null);
     }
 
-    public FabricUserInfo getUser() {
+    public FabricUser getUser() {
         if (!users.isEmpty()) {
             return users.entrySet().iterator().next().getValue();
         }
-        List<FabricUserInfo> users = getUsers();
+        List<FabricUser> users = getUsers();
         if (null == users || users.isEmpty()) {
             return null;
         } else {
@@ -145,7 +157,7 @@ public class IdentityConfig {
         }
     }
 
-    public void setUser(FabricUserInfo fabricUserInfo) {
+    public void setUser(FabricUser fabricUserInfo) {
         if (1 == fabricUserDao.insertUser(fabricUserInfo)) {
             if (fabricUserInfo.getAdmin()) {
                 adminUsers.put(fabricUserInfo.getId(), fabricUserInfo);
@@ -154,7 +166,7 @@ public class IdentityConfig {
         }
     }
 
-    public void updateUser(FabricUserInfo fabricUserInfo) {
+    public void updateUser(FabricUser fabricUserInfo) {
         if (1 == fabricUserDao.updateUser(fabricUserInfo)) {
             if (fabricUserInfo.getAdmin()) {
                 adminUsers.put(fabricUserInfo.getId(), fabricUserInfo);
@@ -175,7 +187,7 @@ public class IdentityConfig {
     }
 
     public List<PeerInfo> getPeers() {
-        List<PeerInfo> peersInfo = peerDao.selectPeersWithCrypto();
+        List<PeerInfo> peersInfo = peerDao.selectPeers();
         synchronized (peers) {
             peers.clear();
             if (null != peersInfo) {
@@ -218,7 +230,7 @@ public class IdentityConfig {
     }
 
     public List<OrdererInfo> getOrderers() {
-        List<OrdererInfo> orderersInfo = ordererDao.selectOrderersWithCrypto();
+        List<OrdererInfo> orderersInfo = ordererDao.selectOrderers();
         synchronized (orderers) {
             orderers.clear();
             if (null != orderersInfo) {

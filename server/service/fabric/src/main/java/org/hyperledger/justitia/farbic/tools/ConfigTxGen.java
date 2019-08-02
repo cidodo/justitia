@@ -1,7 +1,7 @@
 package org.hyperledger.justitia.farbic.tools;
 
 import org.apache.commons.io.IOUtils;
-import org.hyperledger.justitia.common.utils.file.file.FileUtils;
+import org.hyperledger.justitia.common.utils.file.FileUtils;
 import org.hyperledger.justitia.farbic.exception.FabricToolsConfigException;
 import org.hyperledger.justitia.farbic.exception.FabricToolsException;
 import org.hyperledger.justitia.farbic.utils.ssh.CallLocalShell;
@@ -12,7 +12,7 @@ public class ConfigTxGen {
     private final File configtxgen;
     private final File config;
 
-    public ConfigTxGen(File configtxgen, File config) throws FabricToolsException {
+    ConfigTxGen(File configtxgen, File config) throws FabricToolsException {
         if (!configtxgen.exists()) {
             throw new FabricToolsException(String.format("Not found fabric tool configtxgen in directory %s.", configtxgen.getPath()));
         }

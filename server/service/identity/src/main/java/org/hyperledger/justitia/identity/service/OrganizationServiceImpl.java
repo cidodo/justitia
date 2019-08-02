@@ -1,7 +1,9 @@
 package org.hyperledger.justitia.identity.service;
 
-import org.hyperledger.justitia.service.face.identity.OrganizationService;
-import org.hyperledger.justitia.service.face.identity.bean.OrganizationInfo;
+import org.hyperledger.justitia.common.RequestContext;
+import org.hyperledger.justitia.common.bean.identity.Organization;
+import org.hyperledger.justitia.identity.exception.IdentityException;
+import org.hyperledger.justitia.common.face.service.identity.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,36 +17,36 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public String getMspId() {
-        return identityConfig.getMspId();
-    }
-
-    @Override
-    public String getName() {
-        OrganizationInfo organization = identityConfig.getOrganization();
-        if (null == organization) {
-            return null;
+    public Organization getOrganization() {
+        Organization organization;
+        String organizationId = RequestContext.getOrganizationId();
+        if (null == organizationId) {
+            organization = identityConfig.getOrganization();
+        } else {
+            organization = identityConfig.getOrganization(organizationId);
         }
-        return organization.getName();
+        if (null == organization) {
+            throw new IdentityException();
+        }
+        return organization;
     }
 
     @Override
-    public OrganizationInfo getOrganizationInfo() {
-        return identityConfig.getOrganization();
+    public void setOrganization(Organization organization) {
+        identityConfig.setOrganization(organization);
     }
 
     @Override
-    public void setOrganization(OrganizationInfo organizationInfo) {
-        identityConfig.setOrganization(organizationInfo);
-    }
-
-    @Override
-    public void updateOrganizationInfo(OrganizationInfo organizationInfo) {
-        identityConfig.updateOrganization(organizationInfo);
+    public void updateOrganizationInfo(Organization organization) {
+        identityConfig.updateOrganization(organization);
     }
 
     @Override
     public void deleteOrganization() {
-        identityConfig.deleteOrganization();
+        String organizationId = RequestContext.getOrganizationId();
+        if (null == organizationId) {
+            throw new IdentityException();
+        }
+        identityConfig.deleteOrganization(organizationId);
     }
 }

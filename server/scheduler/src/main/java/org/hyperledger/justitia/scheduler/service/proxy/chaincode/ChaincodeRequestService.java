@@ -2,18 +2,18 @@ package org.hyperledger.justitia.scheduler.service.proxy.chaincode;
 
 import org.hyperledger.fabric.protos.peer.Query;
 import org.hyperledger.fabric.sdk.ProposalResponse;
-import org.hyperledger.justitia.service.face.chaincode.bean.TransactionRequestBean;
+import org.hyperledger.justitia.common.bean.chaincode.TransactionRequestBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class ChaincodeRequestService implements org.hyperledger.justitia.service.face.chaincode.ChaincodeRequestService {
-    private final org.hyperledger.justitia.service.face.chaincode.ChaincodeRequestService chaincodeRequestService;
+public class ChaincodeRequestService implements org.hyperledger.justitia.common.face.service.chaincode.ChaincodeRequestService {
+    private final org.hyperledger.justitia.common.face.service.chaincode.ChaincodeRequestService chaincodeRequestService;
 
     @Autowired
-    public ChaincodeRequestService(org.hyperledger.justitia.service.face.chaincode.ChaincodeRequestService chaincodeRequestService) {
+    public ChaincodeRequestService(org.hyperledger.justitia.common.face.service.chaincode.ChaincodeRequestService chaincodeRequestService) {
         this.chaincodeRequestService = chaincodeRequestService;
     }
 

@@ -1,13 +1,21 @@
 package org.hyperledger.justitia.channel.service;
 
-import org.hyperledger.justitia.service.face.channel.ChannelTaskService;
-import org.hyperledger.justitia.service.face.channel.bean.TaskInfo;
+import org.hyperledger.justitia.common.face.service.channel.ChannelTaskService;
+import org.hyperledger.justitia.common.face.service.fabric.NetworkService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ChannelTaskServiceImpl implements ChannelTaskService {
+    private final NetworkService networkService;
+
+    @Autowired
+    public ChannelTaskServiceImpl(NetworkService networkService) {
+        this.networkService = networkService;
+    }
+
     @Override
     public List<TaskInfo> getTasks() {
         return null;
@@ -25,7 +33,7 @@ public class ChannelTaskServiceImpl implements ChannelTaskService {
 
     @Override
     public void submitRequest(String requestId) {
-
+        networkService.resetNetwork();
     }
 
     @Override

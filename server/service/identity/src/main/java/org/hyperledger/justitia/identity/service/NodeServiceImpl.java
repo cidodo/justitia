@@ -1,9 +1,9 @@
 package org.hyperledger.justitia.identity.service;
 
-import org.hyperledger.justitia.service.face.identity.NodeService;
-import org.hyperledger.justitia.service.face.identity.bean.CouchdbInfo;
-import org.hyperledger.justitia.service.face.identity.bean.OrdererInfo;
-import org.hyperledger.justitia.service.face.identity.bean.PeerInfo;
+import org.hyperledger.justitia.common.bean.node.CouchdbInfo;
+import org.hyperledger.justitia.common.bean.node.OrdererInfo;
+import org.hyperledger.justitia.common.bean.node.PeerInfo;
+import org.hyperledger.justitia.common.face.service.identity.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

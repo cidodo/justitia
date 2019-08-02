@@ -10,17 +10,5 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>chaincode</artifactId>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.hyperledger.justitia.service</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hyperledger.justitia.service</groupId>
-            <artifactId>fabric</artifactId>
-        </dependency>
-    </dependencies>
-
     
 </project>

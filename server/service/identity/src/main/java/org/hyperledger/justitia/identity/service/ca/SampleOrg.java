@@ -2,7 +2,7 @@ package org.hyperledger.justitia.identity.service.ca;
 
 import org.hyperledger.fabric.sdk.User;
 import org.hyperledger.fabric_ca.sdk.HFCAClient;
-import org.hyperledger.justitia.common.bean.FabricUser;
+import org.hyperledger.justitia.common.bean.FabricUserImpl;
 
 import java.util.*;
 
@@ -35,11 +35,11 @@ public class SampleOrg {
     Map<String, String> peerLocations = new HashMap<>();
     Map<String, String> ordererLocations = new HashMap<>();
     Map<String, String> eventHubLocations = new HashMap<>();
-    private FabricUser admin;
+    private FabricUserImpl admin;
     private String caLocation;
     private Properties caProperties = null;
 
-    private FabricUser peerAdmin;
+    private FabricUserImpl peerAdmin;
 
 
     private String domainName;
@@ -55,11 +55,11 @@ public class SampleOrg {
         this.mspid = mspid;
     }
 
-    public FabricUser getAdmin() {
+    public FabricUserImpl getAdmin() {
         return admin;
     }
 
-    public void setAdmin(FabricUser admin) {
+    public void setAdmin(FabricUserImpl admin) {
         this.admin = admin;
     }
 
@@ -135,7 +135,7 @@ public class SampleOrg {
         return name;
     }
 
-    public void addUser(FabricUser user) {
+    public void addUser(FabricUserImpl user) {
         userMap.put(user.getName(), user);
     }
 
@@ -161,11 +161,11 @@ public class SampleOrg {
     }
 
 
-    public FabricUser getPeerAdmin() {
+    public FabricUserImpl getPeerAdmin() {
         return peerAdmin;
     }
 
-    public void setPeerAdmin(FabricUser peerAdmin) {
+    public void setPeerAdmin(FabricUserImpl peerAdmin) {
         this.peerAdmin = peerAdmin;
     }
 
