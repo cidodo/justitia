@@ -5,6 +5,7 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import org.hyperledger.fabric.protos.common.Configtx;
 import org.hyperledger.fabric.protos.msp.MspConfig;
 import org.hyperledger.fabric.protos.peer.Configuration;
+import org.hyperledger.justitia.common.bean.node.PeerInfo;
 import org.hyperledger.justitia.common.face.service.fabric.ChannelService;
 import org.hyperledger.justitia.common.bean.channel.ChannelMember;
 import org.hyperledger.justitia.common.face.service.identity.NodeService;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -72,7 +70,7 @@ public class SyncData4Chain implements InitializingBean {
 
     private Map<String, Set<String>> syncPeerRefChannel() {
         Map<String, Set<String>> peerRefChannel = new ConcurrentHashMap<>();
-        List<PeerInfo> peersInfo = nodeService.getPeersInfo();
+        Collection<PeerInfo> peersInfo = nodeService.getPeersInfo();
         if (null != peersInfo && !peersInfo.isEmpty()) {
             for (PeerInfo peerInfo : peersInfo) {
                 String peerId = peerInfo.getId();
@@ -103,14 +101,14 @@ public class SyncData4Chain implements InitializingBean {
                     continue;
                 }
 
-                List<ChannelMember> organizationsInfo = new ArrayList<>();
+                List<ChannelMember> members = new ArrayList<>();
                 Configtx.ConfigGroup application = config.getChannelGroup().getGroupsMap().get("Application");
                 Map<String, Configtx.ConfigGroup> groupsMap = application.getGroupsMap();
                 for (Map.Entry<String, Configtx.ConfigGroup> group : groupsMap.entrySet()) {
                     //organization name
                     String organizationName = group.getKey();
                     String mspId = null;
-                    List<String> anchorPeersStr = new ArrayList<>();
+                    Set<String> anchorPeersStr = new HashSet<>();
                     Configtx.ConfigGroup configGroup = group.getValue();
                     Map<String, Configtx.ConfigValue> valuesMap = configGroup.getValuesMap();
                     //AnchorPeers
@@ -139,9 +137,12 @@ public class SyncData4Chain implements InitializingBean {
                     } catch (InvalidProtocolBufferException e) {
                         LOGGER.warn("MSP configuration parsing failed.", e);
                     }
-                    organizationsInfo.add(new ChannelMember(organizationName, mspId,  anchorPeersStr));
+                    ChannelMember member = new ChannelMember(organizationName);
+                    member.setMspId(mspId);
+                    member.setAnchorPeers(anchorPeersStr);
+                    members.add(member);
                 }
-                channelRefOrg.put(channelId, organizationsInfo);
+                channelRefOrg.put(channelId, members);
             }
         }
         return channelRefOrg;

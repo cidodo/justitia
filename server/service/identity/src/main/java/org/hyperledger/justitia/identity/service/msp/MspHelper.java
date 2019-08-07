@@ -34,7 +34,7 @@ public class MspHelper {
     public String generateOrgMsp(String saveDir) throws IOException, MspException {
         String mspDir = saveDir + File.separator + "msp";
         FileUtils.makeDirectory(mspDir);
-        Organization organization = organizationService.getOrganizationInfo();
+        Organization organization = organizationService.getOrganization();
         if (null == organization) {
             throw new MspException(String.format("There is no organization with id %s.", RequestContext.getOrganizationId()));
         }
@@ -51,7 +51,7 @@ public class MspHelper {
         return mspDir;
     }
 
-    private void writeOrgMsp(String output, Msp msp) throws IOException {
+    private void writeOrgMsp(String output, Msp msp) throws IOException, MspException {
         //admincerts
         writeAdminInfo(output, msp.getAdminUsers());
         //cacerts
@@ -109,7 +109,7 @@ public class MspHelper {
         return saveDir;
     }
 
-    private void writeNodeMsp(String output, Msp msp) throws IOException, CertificateException, NoSuchAlgorithmException {
+    private void writeNodeMsp(String output, Msp msp) throws IOException, CertificateException, NoSuchAlgorithmException, MspException {
         //admincerts
         writeAdminInfo(output, msp.getAdminUsers());
         //cacerts
@@ -128,7 +128,7 @@ public class MspHelper {
         //todo crls
     }
 
-    private void writeAdminInfo(String mspDir, List<FabricUser> adminUsers) throws IOException {
+    private void writeAdminInfo(String mspDir, List<FabricUser> adminUsers) throws IOException, MspException {
         boolean existsAdmin = false;
         if (null != adminUsers) {
             String admincertsPath = mspDir + File.separator + "admincerts";
@@ -147,7 +147,7 @@ public class MspHelper {
         }
     }
 
-    private void writeKeyStore(String mspDir, String signCertPem, String signPriKeyPem) throws CertificateException, NoSuchAlgorithmException, IOException {
+    private void writeKeyStore(String mspDir, String signCertPem, String signPriKeyPem) throws CertificateException, NoSuchAlgorithmException, IOException, MspException {
         if (null == signCertPem || signCertPem.isEmpty()) {
             throw new MspException("SignCerts is null.");
         }
@@ -160,7 +160,7 @@ public class MspHelper {
         FileUtils.writeStringToFile(keystorePath, signPriKeyPem, keyFileName);
     }
 
-    private void writeSignCerts(String mspDir, String signCertPem) throws IOException {
+    private void writeSignCerts(String mspDir, String signCertPem) throws IOException, MspException {
         if (null == signCertPem || signCertPem.isEmpty()) {
             throw new MspException("SignCerts is null.");
         }
@@ -168,7 +168,7 @@ public class MspHelper {
         FileUtils.writeStringToFile(siancertsPath, signCertPem, "cert.pem");
     }
 
-    private void writeRootCaCerts(String mspDir, String caCerts, String folder) throws IOException {
+    private void writeRootCaCerts(String mspDir, String caCerts, String folder) throws IOException, MspException {
         if (StringUtils.isNotEmpty(caCerts)) {
             String cacertsPath = mspDir + File.separator + folder;
             FileUtils.makeDirectory(cacertsPath);

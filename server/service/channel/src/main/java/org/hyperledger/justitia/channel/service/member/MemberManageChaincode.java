@@ -3,7 +3,7 @@ package org.hyperledger.justitia.channel.service.member;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
-import org.hyperledger.justitia.channel.service.CMSCCRequestBean;
+import org.hyperledger.justitia.channel.exception.ChannelServiceException;
 import org.hyperledger.justitia.common.face.service.chaincode.ChaincodeRequestService;
 import org.hyperledger.justitia.common.bean.chaincode.ChaincodeInvokeResult;
 import org.hyperledger.justitia.common.bean.chaincode.ChaincodeQueryResult;
@@ -14,22 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 
 @Component
 public class MemberManageChaincode {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MemberManageChaincode.class);
     private final ChaincodeRequestService chaincodeRequester;
 
     @Value("${fabric.channel.manage.chaincode}")
-    private String memberManageChaincodeName;
-
+    private String memberManageChaincodeName = "CMSCC";
 
     @Autowired
     public MemberManageChaincode(ChaincodeRequestService chaincodeRequestService) {
         this.chaincodeRequester = chaincodeRequestService;
     }
-
 
     public enum RequestState {
         INVALID("invalid"),
@@ -51,7 +49,7 @@ public class MemberManageChaincode {
     public enum RequestType {
         ADD_MEMBER("addMember"),
         DELETE_MEMBER("deleteMember"),
-        MODIFY_ORG_CONFIG("modifyOrgConfig");
+        UPDATE_MEMBER("updateMember");
 
         private String type;
 
@@ -65,7 +63,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 发起更改通道配置的请求
+     * Initiate a proposal to change the channel configuration.
      */
     public String signRequests(CMSCCRequestBean requestInfo) {
         String channelId = requestInfo.getChannelId();
@@ -75,7 +73,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 应答通道内其他成员发起的签名请求
+     * Signature proposal initiated by other members in the response channel.
      */
     public void signResponses(CMSCCRequestBean responsesInfo) {
         String channelId = responsesInfo.getChannelId();
@@ -84,7 +82,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 更改自己发起的签名申请的状态
+     * Change the status of your own signed proposal。
      */
     public void updateRequestState(CMSCCRequestBean updateStateInfo) {
         String channelId = updateStateInfo.getChannelId();
@@ -93,10 +91,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 查询自己发起的签名申请
-     *
-     * @param channelId 通道ID
-     * @param state     请求状态，""表示全匹配
+     * Query your own signature proposal.
      */
     public List<SignRequest> getMyRequests(String channelId, String state) {
         ArrayList<String> args = new ArrayList<>();
@@ -105,10 +100,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 查询自己发起的签名申请的所有签名应答
-     *
-     * @param channelId 通道ID
-     * @param requestId 请求ID
+     * Query all signature responses for signature requests initiated by yourself
      */
     public List<SignResponse> getAllSignResponses(String channelId, String requestId) {
         ArrayList<String> args = new ArrayList<>();
@@ -117,9 +109,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 查询当前处于signing状态的全部请求
-     *
-     * @param channelId 通道ID
+     * Query all requests currently in the "signing" state.
      */
     @Deprecated
     public List<SignRequest> getAllSigningRequest(String channelId) {
@@ -127,9 +117,7 @@ public class MemberManageChaincode {
     }
 
     /**
-     * 查询自己签名过的全部请求
-     *
-     * @param channelId 通道ID
+     * Query all requests that you have signed.
      */
     public List<SignResponse> getAllSignResponsesByChannel(String channelId) {
         return queryChaincode(channelId, "getMyAllSignResponses", null, SignResponse.class);
@@ -147,9 +135,13 @@ public class MemberManageChaincode {
         if (result.isSuccess() && null != payloadAsString) {
             ObjectMapper objectMapper = new ObjectMapper();
             JavaType javaType = objectMapper.getTypeFactory().constructParametricType(ArrayList.class, responseType);
-            return (T) objectMapper.readValue(payloadAsString, javaType);
+            try {
+                return (T) objectMapper.readValue(payloadAsString, javaType);
+            } catch (IOException e) {
+                throw new ChannelServiceException(ChannelServiceException.CMSCC_QUERY_RESULT_DATA_ERROR, function, memberManageChaincodeName);
+            }
         } else {
-            throw new MemberManageException(String.format("Chaincode function %s of %s call failed.", function, memberManageChaincodeName));
+            throw new ChannelServiceException(ChannelServiceException.CMSCC_QUERY_ERROR, function, memberManageChaincodeName);
         }
     }
 
@@ -161,7 +153,7 @@ public class MemberManageChaincode {
         transactionRequestBean.setChaincodeName(memberManageChaincodeName);
         ChaincodeInvokeResult result = chaincodeRequester.invoke(transactionRequestBean);
         if (!result.isSuccess()) {
-            throw new MemberManageException
+            throw new ChannelServiceException(ChannelServiceException.CMSCC_INVOKE_ERROR, function, memberManageChaincodeName);
         }
     }
 

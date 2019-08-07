@@ -1,5 +1,6 @@
 package org.hyperledger.justitia.scheduler.controller.channel;
 
+import org.hyperledger.justitia.common.bean.channel.ChannelMember;
 import org.hyperledger.justitia.common.face.service.channel.ChannelManageService;
 import org.hyperledger.justitia.common.bean.channel.ChannelInfo;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
@@ -35,7 +36,11 @@ public class ChannelManageController {
         String channelId = body.getChannelId();
         String consortiumName = body.getConsortiumName();
         List<String> peersId = body.getPeersId();
-        manageService.createChannel(channelId, consortiumName, peersId);
+
+        ChannelInfo channelInfo = new ChannelInfo(channelId);
+        channelInfo.setConsortium(consortiumName);
+        channelInfo.setPeers(peersId);
+        manageService.createChannel(channelInfo);
         return new ResponseBean().success();
     }
 
@@ -61,7 +66,7 @@ public class ChannelManageController {
 
     @GetMapping("/organization/config")
     public ResponseEntity<byte[]> getMemberConfig() {
-        InputStream organizationConfig = manageService.getMemberConfig();
+        InputStream organizationConfig = manageService.generateMemberConfig();
         ResponseEntity<byte[]> responseEntity = DownloadHelper.getResponseEntity(organizationConfig, "organization-config.json");
         return responseEntity;
     }
@@ -73,7 +78,10 @@ public class ChannelManageController {
         String orgName = form.getOrgName();
         MultipartFile orgConfigFile = form.getOrgConfig();
         String orgConfig = MultipartFileUtils.readFileAsString(orgConfigFile);
-        manageService.addMember(channelId, orgName, orgConfig, description);
+
+        ChannelMember member = new ChannelMember(orgName);
+        member.setMemberConfig(orgConfig);
+        manageService.addMember(channelId, member, description);
         return new ResponseBean().success();
     }
 
@@ -88,7 +96,7 @@ public class ChannelManageController {
 
     @GetMapping("/msp/{channelId}")
     public ResponseBean<List<String>> getChannelMspIds(@PathVariable("channelId") String channelId) {
-        List<String> channelMspId = manageService.getChannelMspId(channelId);
+        List<String> channelMspId = manageService.getMembersMspId(channelId);
         return new ResponseBean<List<String>>().success(channelMspId);
     }
 

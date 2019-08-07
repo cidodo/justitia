@@ -7,17 +7,17 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
+@Getter
 public class ChannelMember {
-    @Getter private String name;
-    @Getter private String mspId;
-    @Getter private JsonNode memberConfig;
-    @Getter private List<String> anchorPeers;
+    private String name;
+    @Setter private String mspId;
+    @Setter private JsonNode memberConfig;
+    @Setter private Set<String> anchorPeers;
 
-    public ChannelMember(String name, String mspId, List<String> anchorPeers) {
+    public ChannelMember(String name) {
         this.name = name;
-        this.mspId = mspId;
-        this.anchorPeers = anchorPeers;
     }
 
     public void setMemberConfig(String memberConfigStr) throws IOException {

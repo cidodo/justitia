@@ -6,6 +6,7 @@ import org.hyperledger.justitia.farbic.exception.FabricToolsException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ComputeUpdate {
 
     public Configtx.ConfigUpdate Compute(Configtx.Config original, Configtx.Config updated,String channelId) throws FabricToolsException {

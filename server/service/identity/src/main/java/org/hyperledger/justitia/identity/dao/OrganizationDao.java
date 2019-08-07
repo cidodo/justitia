@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notNull;
+import static org.hyperledger.justitia.identity.exception.IdentityException.*;
 
 @Component
 public class OrganizationDao {
@@ -49,7 +50,7 @@ public class OrganizationDao {
         //Ca
         Ca ca = organization.getCa();
         if (null == ca) {
-            throw new IdentityException()
+            throw new IdentityException(INCOMPLETE_CA);
         }else {
             caDao.insertSignRootCa(ca);
         }
@@ -57,7 +58,7 @@ public class OrganizationDao {
         //tlsca
         Ca tlsCa = organization.getTlsCa();
         if (organization.getTlsEnable() && null == tlsCa) {
-            throw new IdentityException()
+            throw new IdentityException(INCOMPLETE_TLSCA);
         } else {
             caDao.insertTlsRootCa(organization.getTlsCa());
         }
@@ -99,7 +100,7 @@ public class OrganizationDao {
     public int deleteOrganization(String orgId) {
         Organization organization = getOrganization(orgId);
         if (null == organization) {
-            throw new IdentityException();
+            throw new IdentityException(ORGANIZATION_DOES_NOT_EXITS, orgId);
         }
 
         Msp msp = organization.getMsp();

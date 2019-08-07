@@ -9,7 +9,7 @@ public class UserController {
 //    @Autowired
 //    private UserManageService userManager;
 //    @Autowired
-//    private UserService userService;
+//    private FabricUserService userService;
 //    @Autowired
 //    private TokenManager tokenManager;
 //

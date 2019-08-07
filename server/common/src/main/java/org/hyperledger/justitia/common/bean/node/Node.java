@@ -15,7 +15,6 @@ public abstract class Node extends Crypto{
     private String organizationId;
     private String ip;
     private Integer port;
-    private String containerId;
     private Container container;
     //TLS
     private Boolean tlsEnable;

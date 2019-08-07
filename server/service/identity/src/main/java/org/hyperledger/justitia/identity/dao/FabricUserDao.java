@@ -18,13 +18,11 @@ import static org.hyperledger.justitia.common.utils.ParameterCheckUtils.notNull;
 public class FabricUserDao {
     private final FabricUserMapper fabricUserMapper;
     private final MspDao mspDao;
-    private final OrganizationDao organizationDao;
 
     @Autowired
-    public FabricUserDao(FabricUserMapper fabricUserMapper, MspDao mspDao, OrganizationDao organizationDao) {
+    public FabricUserDao(FabricUserMapper fabricUserMapper, MspDao mspDao) {
         this.fabricUserMapper = fabricUserMapper;
         this.mspDao = mspDao;
-        this.organizationDao = organizationDao;
     }
 
     public int insertUser(FabricUser fabricUser) {
@@ -60,7 +58,7 @@ public class FabricUserDao {
         notEmpty(userId, "Fabric user id is empty.");
         FabricUser user = getUser(userId);
         if (null == user) {
-            throw new IdentityException();
+            throw new IdentityException(IdentityException.USER_DOES_NOT_EXITS, userId);
         }
         Msp msp = user.getMsp();
         if (null != msp) {

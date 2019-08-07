@@ -1,6 +1,6 @@
 package org.hyperledger.justitia.identity.exception;
 
-public class MspException extends RuntimeException {
+public class MspException extends Exception {
     public MspException() {
     }
 

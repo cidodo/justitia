@@ -9,8 +9,8 @@ import java.util.List;
 public class ChannelInfo {
     @Getter private final String channelId;
     @Getter @Setter private String consortium;
-    @Getter private List<String> peers;
-    @Getter private List<ChannelMember> members;
+    @Getter @Setter private List<String> peers;
+    @Getter @Setter private List<ChannelMember> members;
 
     public ChannelInfo(String channelId) {
         this.channelId = channelId;

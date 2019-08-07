@@ -1,23 +1,24 @@
 package org.hyperledger.justitia.identity.service;
 
 import org.hyperledger.justitia.common.bean.identity.FabricUser;
-import org.hyperledger.justitia.common.face.service.identity.UserService;
+import org.hyperledger.justitia.common.face.service.identity.FabricUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class FabricUserServiceImpl implements FabricUserService {
     private final IdentityConfig identityConfig;
 
     @Autowired
-    public UserServiceImpl(IdentityConfig identityConfig) {
+    public FabricUserServiceImpl(IdentityConfig identityConfig) {
         this.identityConfig = identityConfig;
     }
 
     @Override
-    public List<FabricUser> getUsers() {
+    public Collection<FabricUser> getUsers() {
         return identityConfig.getUsers();
     }
 

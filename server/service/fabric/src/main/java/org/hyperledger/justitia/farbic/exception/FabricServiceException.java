@@ -4,7 +4,7 @@ import org.hyperledger.justitia.common.exception.ServiceException;
 
 public class FabricServiceException extends ServiceException {
     /**
-     * 配置不存在:01
+     * Configuration does not exist: 01
      */
     //Fabric user
     public static final int NOT_FOUND_USER_BY_ID     = 140111;
@@ -19,7 +19,7 @@ public class FabricServiceException extends ServiceException {
     public static final int NO_ORDERERS              = 140132;
 
     /**
-     * 对象创建失败:02
+     * Object creation failed: 02
      */
     //HFClient
     public static final int CREATE_HFCLIENT_ERROR    = 140210;
@@ -35,7 +35,7 @@ public class FabricServiceException extends ServiceException {
     public static final int CREATE_PEER_ERROR        = 140240;
 
     /**
-     * Fabric交易相关: 03
+     * Fabric transaction exception: 03
      */
     public static final int ENDORSER_FAILED          = 140321;
     public static final int SEND_TRANSACTION_FAILED  = 140322;
@@ -44,14 +44,18 @@ public class FabricServiceException extends ServiceException {
 
 
     /**
-     * Fabric tools异常:04
+     * Fabric tools exception: 04
      */
-    public static final int
+    public static final int CONFIGTXGEN_CALL_ERROR              = 140411;
+    public static final int CONFIGTXGEN_GENERATE_CONFIG_ERROR   = 140412;
+    public static final int CONFIGTXLATOR_CALL_ERROR            = 140421;
+    public static final int CRYPTOGEN_CALL_ERROR                = 140431;
+    public static final int CRYPTOGEN_GENERATE_CONFIG_ERROE     = 140432;
 
     /**
-     * 其他异常:99
+     * Unknown exception: 99
      */
-    public static final int UNKONWN_FABRIC_ERROR     = 149999;
+    public static final int UNKNOWN_FABRIC_ERROR     = 149999;
 
     public FabricServiceException(int errorCode) {
         super(errorCode);

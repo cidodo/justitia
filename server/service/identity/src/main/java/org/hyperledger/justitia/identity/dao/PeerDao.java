@@ -78,7 +78,7 @@ public class PeerDao {
 
         PeerInfo peer = getPeer(id);
         if (null == peer) {
-            throw new IdentityException();
+            throw new IdentityException(IdentityException.PEER_DOES_NOT_EXITS, id);
         }
         //delete couchdb
         CouchdbInfo couchdb = peer.getCouchdb();

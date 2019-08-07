@@ -8,6 +8,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 public interface MspService {
-    File getOrganizationMSP(File saveDir) throws IOException;
-    File getNodeMSP(File saveDir, String nodeId, Node.NodeType nodeType) throws IOException, CertificateException, NoSuchAlgorithmException;
+    File getOrganizationMSP(File saveDir);
+    File getNodeMSP(File saveDir, String nodeId, Node.NodeType nodeType);
 }

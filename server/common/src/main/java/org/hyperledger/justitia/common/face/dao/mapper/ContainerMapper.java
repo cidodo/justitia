@@ -1,6 +1,7 @@
 package org.hyperledger.justitia.common.face.dao.mapper;
 
-import org.hyperledger.justitia.dao.bean.Container;
+
+import org.hyperledger.justitia.common.bean.node.Container;
 
 public interface ContainerMapper {
     int deleteByPrimaryKey(String id);

@@ -1,6 +1,11 @@
 package org.hyperledger.justitia.scheduler.controller.identity.format;
 
+import org.hyperledger.justitia.common.RequestContext;
 import org.hyperledger.justitia.common.bean.identity.*;
+import org.hyperledger.justitia.common.bean.identity.crypto.Ca;
+import org.hyperledger.justitia.common.bean.identity.crypto.Crypto;
+import org.hyperledger.justitia.common.bean.identity.crypto.Msp;
+import org.hyperledger.justitia.common.bean.node.*;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
 import org.hyperledger.justitia.scheduler.controller.identity.beans.*;
 import org.hyperledger.justitia.scheduler.exception.UploadFileException;
@@ -39,30 +44,22 @@ public class FormatData {
         return couchdbInfo;
     }
 
-    private static void formatNodeInfo(NodeInfo nodeInfo, SetNodeBean nodeBean) {
+    private static void formatNodeInfo(Node nodeInfo, SetNodeBean nodeBean) {
         if (null == nodeInfo || null == nodeBean) {
             return;
         }
         nodeInfo.setId(nodeBean.getName());
+        nodeInfo.setOrganizationId(RequestContext.getOrganizationId());
         nodeInfo.setIp(nodeBean.getIp());
         nodeInfo.setPort(nodeBean.getPort());
+        Container container = new Container();
+        container.setContainerName(nodeBean.getContainerId());
 
-        NodeCrypto crypto = new NodeCrypto();
-        //tlsInfo
         nodeInfo.setTlsEnable(nodeBean.getTlsEnable());
-        if (nodeInfo.getTlsEnable()) {
-            nodeInfo.setDoubleVerity(nodeBean.getDoubleVerify());
-//            nodeInfo.setSslTarget(nodeBean.getSslTarget());
+        nodeInfo.setDoubleVerity(nodeBean.getDoubleVerify());
+        nodeInfo.setHostsName(nodeBean.getHostsName());
 
-            TlsInfo tlsInfo = new TlsInfo();
-            tlsInfo.setCa(getMultipartFileString(nodeBean.getTlsCa()));
-            tlsInfo.setCert(getMultipartFileString(nodeBean.getTlsCert()));
-            tlsInfo.setKey(getMultipartFileString(nodeBean.getTlsKey()));
-            crypto.setTlsInfo(tlsInfo);
-        }
-        //mspInfo
-        crypto.setMspInfo(null);
-        nodeInfo.setCrypto(crypto);
+        formatCrypto(nodeInfo, nodeBean);
     }
 
     public static FabricUser formatUser(SetUserBean userBean) {
@@ -70,53 +67,12 @@ public class FormatData {
             return null;
         }
 
-        FabricUser userInfo = new FabricUser();
-        userInfo.setId(userBean.getUserName());
-        userInfo.setAdmin(userBean.getAdmin());
-        userInfo.setTag(null);
-        userInfo.setCrypto(formatCrypto(userBean));
-        return userInfo;
-    }
-
-    private static UserCrypto formatCrypto(SetUserBean userBean) {
-        if (null == userBean) {
-            return null;
-        }
-        UserCrypto crypto = new UserCrypto();
-        crypto.setTlsInfo(formatTls(userBean));
-        crypto.setMspInfo(formatMsp(userBean));
-        return crypto;
-    }
-
-    private static TlsInfo formatTls(SetUserBean userBean) {
-        if (null == userBean) {
-            return null;
-        }
-        TlsInfo tlsInfo = null;
-        if (userBean.getTlsEnable()) {
-            tlsInfo = new TlsInfo();
-            tlsInfo.setCa(getMultipartFileString(userBean.getTlsCa()));
-            tlsInfo.setCert(getMultipartFileString(userBean.getTlsCert()));
-            tlsInfo.setKey(getMultipartFileString(userBean.getTlsKey()));
-        }
-        return tlsInfo;
-    }
-
-    private static MspInfo formatMsp(SetUserBean userBean){
-        if (null == userBean) {
-            return null;
-        }
-        MspInfo mspInfo = new MspInfo();
-        mspInfo.setAdminCerts(null);
-        mspInfo.setCaCerts(null);
-        mspInfo.setConfigFile(null);
-        mspInfo.setCrls(null);
-        mspInfo.setIntermediateCerts(null);
-        mspInfo.setKeyStore(getMultipartFileString(userBean.getKeyStore()));
-        mspInfo.setSignCerts(getMultipartFileString(userBean.getSignCerts()));
-        mspInfo.setTlsCaCerts(null);
-        mspInfo.setTlsIntermediateCerts(null);
-        return mspInfo;
+        FabricUser fabricUser = new FabricUser();
+        fabricUser.setId(userBean.getUserName());
+        fabricUser.setAdmin(userBean.getAdmin());
+        fabricUser.setTag(null);
+        formatCrypto(fabricUser, userBean);
+        return fabricUser;
     }
 
     public static Organization formatOrganization(SetOrganizationBean organizationBean) {
@@ -124,38 +80,46 @@ public class FormatData {
             return null;
         }
 
-        Organization organizationInfo = new Organization();
-        organizationInfo.setId(organizationBean.getName());
-        organizationInfo.setName(organizationBean.getName());
-        organizationInfo.setMspId(organizationBean.getMspId());
-        organizationInfo.setType(organizationBean.getType());
-        organizationInfo.setTlsEnable(organizationBean.getTlsEnable());
-        organizationInfo.setCrypto(formatOrganizationCrypto(organizationBean));
-        return organizationInfo;
+        Organization organization = new Organization();
+        organization.setId(organizationBean.getName());
+        organization.setName(organizationBean.getName());
+        organization.setMspId(organizationBean.getMspId());
+        organization.setType(organizationBean.getType());
+        organization.setTlsEnable(organizationBean.getTlsEnable());
+        formatCrypto(organization, organizationBean);
+        return organization;
     }
 
-    private static OrganizationCrypto formatOrganizationCrypto(SetOrganizationBean organizationBean) {
-        if (null == organizationBean) {
-            return null;
-        }
-        String caCert  = getMultipartFileString(organizationBean.getCaCert());
-        String tlsCaCert = getMultipartFileString(organizationBean.getTlsCaCert());
+    private static void formatCrypto(Crypto crypto, CryptoBean cryptoBean) {
+        String caCert = getMultipartFileString(cryptoBean.getCaCert());
+        String caKey = getMultipartFileString(cryptoBean.getCaKey());
+        String tlsCaCert = getMultipartFileString(cryptoBean.getTlsCaCert());
+        String tlsCaKey = getMultipartFileString(cryptoBean.getTlsCaKey());
+        String tlsCert = getMultipartFileString(cryptoBean.getTlsCert());
+        String tlsKey = getMultipartFileString(cryptoBean.getTlsKey());
 
-        OrganizationCrypto crypto = new OrganizationCrypto();
-        CaInfo ca = new CaInfo();
-        ca.setCert(caCert);
-        crypto.setCa(ca);
+        String signCert = getMultipartFileString(cryptoBean.getSignCerts());
+        String signKey = getMultipartFileString(cryptoBean.getSignKey());
 
-        CaInfo tlsCa = new CaInfo();
-        tlsCa.setCert(tlsCaCert);
-        crypto.setTlsca(tlsCa);
-
-        MspInfo msp = new MspInfo();
+        Msp msp = new Msp();
         msp.setCaCerts(caCert);
         msp.setTlsCaCerts(tlsCaCert);
-        crypto.setMsp(msp);
+        msp.setTlsCerts(tlsCert);
+        msp.setTlsKey(tlsKey);
+        msp.setSignCerts(signCert);
+        msp.setKeyStore(signKey);
 
-        return crypto;
+        Ca ca = new Ca();
+        ca.setCert(caCert);
+        ca.setKey(caKey);
+
+        Ca tlsCa = new Ca();
+        tlsCa.setCert(tlsCaCert);
+        tlsCa.setKey(tlsCaKey);
+
+        crypto.setMsp(msp);
+        crypto.setCa(ca);
+        crypto.setTlsCa(tlsCa);
     }
 
     private static String getMultipartFileString(MultipartFile file) {

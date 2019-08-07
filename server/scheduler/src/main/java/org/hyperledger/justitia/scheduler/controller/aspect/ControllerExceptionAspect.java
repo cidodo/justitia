@@ -125,11 +125,4 @@ public class ControllerExceptionAspect {
         LOGGER.error("Duplicate key exception.", e);
         return new ResponseBean().failure(ResponseBean.IDENTITY_DUPLICATE_KEY, e.getMessage());
     }
-
-    @ResponseStatus(HttpStatus.OK)
-    @ExceptionHandler(MemberManageException.class)
-    public ResponseBean handleException(MemberManageException e) {
-        LOGGER.error("Member manage exception.", e);
-        return new ResponseBean().failure(ResponseBean.IDENTITY_DUPLICATE_KEY, e.getMessage());
-    }
 }

@@ -1,4 +1,4 @@
-package org.hyperledger.justitia.channel.service;
+package org.hyperledger.justitia.channel.service.member;
 
 import lombok.Data;
 import org.hyperledger.justitia.channel.service.member.MemberManageChaincode;

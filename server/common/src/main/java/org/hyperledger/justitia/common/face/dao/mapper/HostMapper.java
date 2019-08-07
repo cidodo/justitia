@@ -1,6 +1,7 @@
 package org.hyperledger.justitia.common.face.dao.mapper;
 
-import org.hyperledger.justitia.dao.bean.Host;
+
+import org.hyperledger.justitia.common.bean.node.Host;
 
 public interface HostMapper {
     int deleteByPrimaryKey(String id);

@@ -2,10 +2,10 @@ package org.hyperledger.justitia.common.face.service.identity;
 
 import org.hyperledger.justitia.common.bean.identity.FabricUser;
 
-import java.util.List;
+import java.util.Collection;
 
-public interface UserService {
-    List<FabricUser> getUsers();
+public interface FabricUserService {
+    Collection<FabricUser> getUsers();
     FabricUser getAdminUser();
     FabricUser getRandomUser();
     FabricUser getUser(String userId);

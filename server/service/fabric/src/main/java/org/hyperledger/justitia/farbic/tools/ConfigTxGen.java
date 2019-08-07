@@ -10,7 +10,6 @@ import org.hyperledger.justitia.farbic.utils.ssh.CallShell;
 import java.io.*;
 public class ConfigTxGen {
     private final File configtxgen;
-    private final File config;
 
     ConfigTxGen(File configtxgen, File config) throws FabricToolsException {
         if (!configtxgen.exists()) {
@@ -21,7 +20,6 @@ public class ConfigTxGen {
         if (!config.exists()) {
             throw new FabricToolsConfigException(String.format("Not found configtxgen's config file in directory %s.", config.getPath()));
         }
-        this.config = config;
     }
 
     //------------------------------------------------ genesis block ---------------------------------------------------

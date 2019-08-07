@@ -1,6 +1,9 @@
 package org.hyperledger.justitia.channel.service;
 
 import org.hyperledger.justitia.channel.exception.ChannelServiceException;
+import org.hyperledger.justitia.channel.service.member.CMSCCRequestBean;
+import org.hyperledger.justitia.channel.service.member.ChannelMemberService;
+import org.hyperledger.justitia.common.bean.identity.Organization;
 import org.hyperledger.justitia.common.utils.file.FileUtils;
 import org.hyperledger.justitia.common.face.service.channel.ChannelManageService;
 import org.hyperledger.justitia.common.bean.channel.ChannelInfo;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
@@ -27,36 +31,61 @@ public class ChannelManageServiceImpl implements ChannelManageService {
     private final FabricToolsService fabricToolsService;
     private final OrganizationService organizationService;
     private final MspService mspService;
+    private final ChannelMemberService channelMemberService;
+    private final ChannelConfigProposalServiceImpl channelConfigProposalService;
+
 
     @Autowired
     public ChannelManageServiceImpl(ChannelService channelService, NetworkService networkService,
-                                    FabricToolsService fabricToolsService, OrganizationService organizationService, MspService mspService) {
+                                    FabricToolsService fabricToolsService, OrganizationService organizationService,
+                                    MspService mspService, ChannelMemberService channelMemberService,
+                                    ChannelConfigProposalServiceImpl channelConfigProposalService) {
         this.channelService = channelService;
         this.networkService = networkService;
         this.fabricToolsService = fabricToolsService;
         this.organizationService = organizationService;
         this.mspService = mspService;
+        this.channelMemberService = channelMemberService;
+        this.channelConfigProposalService = channelConfigProposalService;
     }
 
 
     @Override
     public void createChannel(ChannelInfo channelInfo) {
-        OrganizationInfo organizationInfo = organizationService.getOrganizationInfo();
-        String memberName = organizationInfo.getName();
-        String mspId = organizationInfo.getMspId();
+        String channelId = channelInfo.getChannelId();
+        String consortium = channelInfo.getConsortium();
+
+        Organization organization = organizationService.getOrganization();
+        String memberName = organization.getName();
+        String mspId = organization.getMspId();
         File mspDirectory = generateMsp();
 
         byte[] createChannelTx = fabricToolsService.generateCreateChannelTx(memberName, mspId, mspDirectory, channelId, consortium);
-        byte[] signature = channelService.getChannelConfigurationSignature(createChannelTx);
-        channelService.createChannel(channelId, createChannelTx, signature);
+        byte[] signature;
+        try {
+            signature = channelService.getChannelConfigurationSignature(createChannelTx);
+        } catch (Throwable e) {
+            throw new ChannelServiceException(ChannelServiceException.CREATE_CHAIN_TRANSACTION_SIGN_ERROR, e);
+        }
+        try {
+            channelService.createChannel(channelId, createChannelTx, signature);
+        } catch (Throwable e) {
+            throw new ChannelServiceException(ChannelServiceException.CREATE_TRANSACTION_SUBMIT_ERROR, e);
+        }
 
+        List<String> peersId = channelInfo.getPeers();
         if (null != peersId && !peersId.isEmpty()) {
             peerJoinChannel(channelId, peersId);
         }
     }
 
     private File generateMsp() {
-        File tempDirectory = FileUtils.createTempDirectory();
+        File tempDirectory;
+        try {
+            tempDirectory = FileUtils.createTempDirectory();
+        } catch (IOException e) {
+            throw new ChannelServiceException(ChannelServiceException.UNKNOWN_EXCEPTION, e);
+        }
         return mspService.getOrganizationMSP(tempDirectory);
     }
 
@@ -76,12 +105,11 @@ public class ChannelManageServiceImpl implements ChannelManageService {
                 }
             }
         }finally {
+            //fixme 暂时手动触发，最好做节点发现，然后自动触发
             networkService.resetNetwork();
         }
-        if (null != failedPeers && !failedPeers.isEmpty()) {
-            String msg = String.format("节点 %s 加入通道%s失败。", Arrays.toString(failedPeers.toArray()), channelId);
-//            String msg = String.format("Node %s failed to join channel %s.", Arrays.toString(failedPeers.toArray()), channelId);
-            throw new ChannelServiceException(msg);
+        if (!failedPeers.isEmpty()) {
+            throw new ChannelServiceException(ChannelServiceException.PEER_JOIN_ERROR, Arrays.toString(failedPeers.toArray()), channelId);
         }
     }
 
@@ -112,48 +140,47 @@ public class ChannelManageServiceImpl implements ChannelManageService {
                 channelInfo.addPeer(peerId);
             }
         }
-        List<ChannelMember> organizations = networkService.getChannelMembers(channelId);
-        if (null != organizations) {
-            for (ChannelMember organization : organizations) {
-                ChannelInfo.Member orgInfo = new ChannelInfo.Member(organization.getName(), organization.getMspId(), organization.getAnchorPeers());
-                channelInfo.addMember(orgInfo);
-            }
-        }
+        List<ChannelMember> members = networkService.getChannelMembers(channelId);
+        channelInfo.setMembers(members);
         return channelInfo;
     }
 
     @Override
-    public List<String> getChannelMspId(String channelId) {
+    public List<String> getMembersMspId(String channelId) {
         if (null == channelId || channelId.isEmpty()) {
             return null;
         }
-        List<String> mspsId = new ArrayList<>();
+        List<String> membersMsp = new ArrayList<>();
         List<ChannelMember> organizations = networkService.getChannelMembers(channelId);
         if (null != organizations) {
             for (ChannelMember organization : organizations) {
-                mspsId.add(organization.getMspId());
+                membersMsp.add(organization.getMspId());
             }
         }
-        return mspsId;
+        return membersMsp;
     }
 
     @Override
-    public InputStream getMemberConfig(String memberId) {
-        OrganizationInfo organizationInfo = organizationService.getOrganizationInfo();
-        String memberName = organizationInfo.getName();
-        String mspId = organizationInfo.getMspId();
+    public InputStream generateMemberConfig() {
+        Organization organization = organizationService.getOrganization();
+        String memberName = organization.getName();
+        String mspId = organization.getMspId();
         File mspDirectory = generateMsp();
-        return fabricToolsService.generateMemberConfig(memberName, mspId, mspDirectory, memberId);
+        return fabricToolsService.generateMemberConfig(memberName, mspId, mspDirectory);
     }
 
     @Override
-    public void addMember(String channelId,  ChannelMember member, String description) {
-        memberManager.addMember(channelId, orgName, orgConfig, description);
+    public void addMember(String channelId, ChannelMember member, String description) {
+        CMSCCRequestBean proposalInfo = channelMemberService.addMember(channelId, member.getName(), member.getMemberConfig(), description);
+        String proposalId = channelConfigProposalService.createSignProposal(proposalInfo);
+        //todo DB
     }
 
     @Override
     public void deleteMember(String channelId, String memberName, String description) {
-        memberManager.deleteMember(channelId, memberName, description);
+        CMSCCRequestBean proposalInfo = channelMemberService.deleteMember(channelId, memberName, description);
+        String proposalId = channelConfigProposalService.createSignProposal(proposalInfo);
+        //todo DB
     }
 
     @Override

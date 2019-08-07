@@ -4,13 +4,13 @@ import org.hyperledger.justitia.common.bean.node.CouchdbInfo;
 import org.hyperledger.justitia.common.bean.node.OrdererInfo;
 import org.hyperledger.justitia.common.bean.node.PeerInfo;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface NodeService {
     /**
      * peer
      */
-    List<PeerInfo> getPeersInfo();
+    Collection<PeerInfo> getPeersInfo();
     PeerInfo getPeerInfo(String peerId);
     void setPeer(PeerInfo peerInfo);
     void updatePeerInfo(PeerInfo peerInfo);
@@ -19,7 +19,7 @@ public interface NodeService {
     /**
      * orderer
      */
-    List<OrdererInfo> getOrderersInfo();
+    Collection<OrdererInfo> getOrderersInfo();
     OrdererInfo getOrdererInfo();
     OrdererInfo getOrdererInfo(String ordererId);
     void setOrderer(OrdererInfo ordererInfo);
@@ -30,6 +30,6 @@ public interface NodeService {
      * couchdb
      */
     //FIXME couchdb目前没有必要
-    List<CouchdbInfo> getCouchdbsInfo();
+    Collection<CouchdbInfo> getCouchdbsInfo();
     CouchdbInfo getCouchdbInfo(String couchdbId);
 }

@@ -22,7 +22,6 @@ import org.hyperledger.justitia.identity.dao.FabricUserDao;
 import org.hyperledger.justitia.identity.dao.OrdererDao;
 import org.hyperledger.justitia.identity.dao.OrganizationDao;
 import org.hyperledger.justitia.identity.dao.PeerDao;
-import org.hyperledger.justitia.identity.exception.IdentityException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -51,14 +50,15 @@ public class IdentityConfig {
     }
 
     public Organization getOrganization() {
-        List<Organization> organizations = organizationDao.selectOrganization();
-        if (null == organizations || organizations.isEmpty()) {
-            throw new IdentityException()
+        if (IdentityConfig.organizations.isEmpty()) {
+            fullOrganizations();
         }
-        for (Organization organization: organizations) {
-            IdentityConfig.organizations.put(organization.getId(), organization);
+        Iterator<Organization> iterator = organizations.values().iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        } else {
+            return null;
         }
-        return organizations.get(0);
     }
 
     public Organization getOrganization(String orgId) {
@@ -66,11 +66,18 @@ public class IdentityConfig {
             return IdentityConfig.organizations.get(orgId);
         } else {
             Organization organization = organizationDao.getOrganization(orgId);
-            if (null == organization) {
-                throw new IdentityException()
-            }
             IdentityConfig.organizations.put(organization.getId(), organization);
             return organization;
+        }
+    }
+
+    private void fullOrganizations() {
+        List<Organization> organizations = organizationDao.selectOrganization();
+        if (null == organizations || organizations.isEmpty()) {
+            return;
+        }
+        for (Organization organization : organizations) {
+            IdentityConfig.organizations.put(organization.getId(), organization);
         }
     }
 
@@ -86,23 +93,19 @@ public class IdentityConfig {
         }
     }
 
-    public void deleteOrganization(String orgId) {
+    public void deleteOrganization(final String orgId) {
         if (1 == organizationDao.deleteOrganization(orgId)) {
             IdentityConfig.organizations.remove(orgId);
         }
     }
 
-    public List<FabricUser> getUsers(String orgId) {
-        Organization organization = getOrganization(orgId);
-
+    public Collection<FabricUser> getUsers() {
         List<FabricUser> fabricUsersInfo = fabricUserDao.selectUser();
         synchronized (this) {
             adminUsers.clear();
             users.clear();
             if (null != fabricUsersInfo) {
-                String mspId = getMspId();
                 for (FabricUser fabricUserInfo : fabricUsersInfo) {
-                    fabricUserInfo.setMspId(mspId);
                     if (fabricUserInfo.getAdmin()) {
                         adminUsers.put(fabricUserInfo.getId(), fabricUserInfo);
                     }
@@ -110,7 +113,7 @@ public class IdentityConfig {
                 }
             }
         }
-        return fabricUsersInfo;
+        return users.values();
     }
 
     public FabricUser getAdminUser() {
@@ -119,9 +122,7 @@ public class IdentityConfig {
             synchronized (adminUsers) {
                 adminUsers.clear();
                 if (null != adminUsersInfo) {
-                    String mspId = getMspId();
                     for (FabricUser adminUserInfo : adminUsersInfo) {
-                        adminUserInfo.setMspId(mspId);
                         adminUsers.put(adminUserInfo.getId(), adminUserInfo);
                     }
                 }
@@ -130,7 +131,7 @@ public class IdentityConfig {
         if (adminUsers.isEmpty()) {
             return null;
         } else {
-            return adminUsers.entrySet().iterator().next().getValue();
+            return adminUsers.values().iterator().next();
         }
     }
 
@@ -138,7 +139,6 @@ public class IdentityConfig {
         if (!users.containsKey(userId)) {
             FabricUser fabricUserInfo = fabricUserDao.getUser(userId);
             if (null != fabricUserInfo) {
-                fabricUserInfo.setMspId(getMspId());
                 users.put(fabricUserInfo.getId(), fabricUserInfo);
             }
         }
@@ -149,11 +149,11 @@ public class IdentityConfig {
         if (!users.isEmpty()) {
             return users.entrySet().iterator().next().getValue();
         }
-        List<FabricUser> users = getUsers();
+        Collection<FabricUser> users = getUsers();
         if (null == users || users.isEmpty()) {
             return null;
         } else {
-            return users.get(0);
+            return users.iterator().next();
         }
     }
 
@@ -247,7 +247,7 @@ public class IdentityConfig {
             List<OrdererInfo> orderersInfo = getOrderers();
             if (null == orderersInfo || orderersInfo.isEmpty()) {
                 return null;
-            }else {
+            } else {
                 return orderersInfo.get(0);
             }
         }

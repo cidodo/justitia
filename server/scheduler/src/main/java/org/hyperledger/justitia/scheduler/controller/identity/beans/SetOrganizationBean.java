@@ -4,11 +4,9 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 @Data
-public class SetOrganizationBean {
+public class SetOrganizationBean extends CryptoBean{
     private String name;
     private String type;
     private String mspId;
     private Boolean tlsEnable;
-    private MultipartFile caCert;
-    private MultipartFile tlsCaCert;
 }

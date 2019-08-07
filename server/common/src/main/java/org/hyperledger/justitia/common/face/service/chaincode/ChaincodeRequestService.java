@@ -16,7 +16,7 @@ public interface ChaincodeRequestService {
 
     ChaincodeInvokeResult invoke(TransactionRequestBean transactionRequestBean);
 
-    Collection<ProposalResponse> endorsement(TransactionRequestBean transactionRequestBean) throws ProposalException, InvalidArgumentException;
+    Collection<ProposalResponse> endorsement(TransactionRequestBean transactionRequestBean);
 
     BlockEvent.TransactionEvent sendTransaction(String channelId, Collection<ProposalResponse> responses);
 
@@ -24,6 +24,6 @@ public interface ChaincodeRequestService {
 
     List<ChaincodeInfo> queryInstalledChaincodes(String peerId);
 
-    List<ChaincodeInfo> queryInstantiatedChaincodes(String channelName, String peerId);
+    List<ChaincodeInfo> queryInstantiatedChaincodes(String channelId, String peerId);
 
 }

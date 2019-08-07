@@ -68,7 +68,7 @@ public class ChannelServiceImpl extends FabricServiceHelper implements ChannelSe
             Common.Block configBlock = (Common.Block) method.invoke(channel, peers);
             return configBlock.getHeader().getNumber();
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
-            throw new FabricServiceException(FabricServiceException.UNKONWN_FABRIC_ERROR, e);
+            throw new FabricServiceException(FabricServiceException.UNKNOWN_FABRIC_ERROR, e);
         } finally {
             shutdownChannel(channel, true);
         }
@@ -84,7 +84,7 @@ public class ChannelServiceImpl extends FabricServiceHelper implements ChannelSe
             method.setAccessible(true);
             configBlock = (Common.Block) method.invoke(channel);
         } catch (NoSuchMethodException | IllegalAccessException  | InvocationTargetException | ClassNotFoundException e) {
-            throw new FabricServiceException(FabricServiceException.UNKONWN_FABRIC_ERROR, e);
+            throw new FabricServiceException(FabricServiceException.UNKNOWN_FABRIC_ERROR, e);
         }  finally {
             shutdownChannel(channel, true);
         }

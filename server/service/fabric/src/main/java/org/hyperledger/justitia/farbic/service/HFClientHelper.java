@@ -5,11 +5,15 @@ import org.hyperledger.fabric.sdk.exception.InvalidArgumentException;
 import org.hyperledger.fabric.sdk.exception.TransactionException;
 import org.hyperledger.fabric.sdk.helper.Config;
 import org.hyperledger.fabric.sdk.security.CryptoSuite;
+import org.hyperledger.justitia.common.Context;
+import org.hyperledger.justitia.common.bean.identity.FabricUser;
+import org.hyperledger.justitia.common.bean.node.Node;
+import org.hyperledger.justitia.common.bean.node.OrdererInfo;
+import org.hyperledger.justitia.common.bean.node.PeerInfo;
 import org.hyperledger.justitia.farbic.exception.FabricServiceException;
 import org.hyperledger.justitia.common.face.service.fabric.NetworkService;
 import org.hyperledger.justitia.common.face.service.identity.NodeService;
-import org.hyperledger.justitia.common.face.service.identity.UserService;
-import org.hyperledger.justitia.common.bean.identity.NodeInfo;
+import org.hyperledger.justitia.common.face.service.identity.FabricUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,18 +28,18 @@ import static org.hyperledger.justitia.farbic.exception.FabricServiceException.*
 @Service
 public class HFClientHelper {
     private static final Logger LOGGER = LoggerFactory.getLogger(HFClientHelper.class);
-    private static final String FABRIC_SDK_CONFIG_FILE = "resources/fabric/config/config.properties";
 
     static {
-        System.setProperty(Config.ORG_HYPERLEDGER_FABRIC_SDK_CONFIGURATION, FABRIC_SDK_CONFIG_FILE);
+        String fabricSdkConfigFile = Context.getProperty(Context.FABRIC_CONFIG, "config.properties");
+        System.setProperty(Config.ORG_HYPERLEDGER_FABRIC_SDK_CONFIGURATION, fabricSdkConfigFile);
     }
 
-    private final UserService userService;
+    private final FabricUserService userService;
     private final NodeService nodeService;
     private final NetworkService networkService;
 
     @Autowired
-    public HFClientHelper(UserService userService, NodeService nodeService, NetworkService networkService) {
+    public HFClientHelper(FabricUserService userService, NodeService nodeService, NetworkService networkService) {
         this.userService = userService;
         this.nodeService = nodeService;
         this.networkService = networkService;
@@ -169,7 +173,7 @@ public class HFClientHelper {
     }
 
     Set<Orderer> createOrderers(HFClient client) {
-        List<OrdererInfo> orderersInfo = nodeService.getOrderersInfo();
+        Collection<OrdererInfo> orderersInfo = nodeService.getOrderersInfo();
         if (null == orderersInfo || orderersInfo.isEmpty()) {
             throw new FabricServiceException(NO_ORDERERS);
         }
@@ -200,7 +204,7 @@ public class HFClientHelper {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T createNode(HFClient client, NodeInfo nodeInfo, Class<T> nodeType) throws InvalidArgumentException {
+    private <T> T createNode(HFClient client, Node nodeInfo, Class<T> nodeType) throws InvalidArgumentException {
         if (nodeInfo == null) {
             return null;
         }

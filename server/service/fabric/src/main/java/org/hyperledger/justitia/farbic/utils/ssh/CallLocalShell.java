@@ -1,8 +1,5 @@
 package org.hyperledger.justitia.farbic.utils.ssh;
 
-
-import org.hyperledger.justitia.farbic.utils.ssh.exception.CallShellException;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -99,10 +96,10 @@ public class CallLocalShell extends CallShell {
     }
 
 
-    public Result execScripts(File scripts, File dir) throws CallShellException, IOException, InterruptedException {
+    public Result execScripts(File scripts, File dir) throws IOException, InterruptedException {
         String os = System.getProperty("os.name");
         if(os.toLowerCase().startsWith("win")){
-            throw new CallShellException("Windows system cannot execute script files with .sh suffix");
+            throw new IllegalArgumentException("Windows system cannot execute script files with .sh suffix");
         }
         if (!scripts.exists()) {
             throw new FileNotFoundException("No such file or directory:" + scripts.getPath());

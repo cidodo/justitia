@@ -284,7 +284,7 @@ public class MemberManageChaincodeListener implements InitializingBean {
 //                                LOGGER.warn("组织数据更新失败", e);
 //                            }
 //
-//                            List<ChannelConfigTask> tasks = taskDao.selectMySigningTaskByChannel(channelId);
+//                            List<ChannelConfigProposal> tasks = taskDao.selectMySigningTaskByChannel(channelId);
 //                            if (tasks != null && !tasks.isEmpty()) {
 //                                byte[] channelConfigurationBytes;
 //                                try {
@@ -301,7 +301,7 @@ public class MemberManageChaincodeListener implements InitializingBean {
 //                                    return;
 //                                }
 //                                long configVersion = config.getSequence();
-//                                for (ChannelConfigTask task : tasks) {
+//                                for (ChannelConfigProposal task : tasks) {
 //                                    if (configVersion != task.getChannelConfigVersion() && "signing".equals(task.getStatus())) {
 //                                        try {
 //                                            memberManageChaincode.updateRequestState(channelId, task.getProposalId(), MemberManageChaincode.RequestState.INVALID);

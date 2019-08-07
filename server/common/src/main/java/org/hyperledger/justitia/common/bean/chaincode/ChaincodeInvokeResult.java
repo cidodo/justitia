@@ -8,11 +8,12 @@ import java.util.Date;
 @Data
 public class ChaincodeInvokeResult {
     private boolean success;
-    private ChaincodeInfo chaincodeInfo;
-    private String channelId;
     private String transactionId;
+    private String channelId;
     private Date timestamp;
     private String type;
+
+    private ChaincodeInfo chaincodeInfo;
 
     public ChaincodeInvokeResult(BlockEvent.TransactionEvent event) {
         if (null == event) {

@@ -1,5 +1,6 @@
 package org.hyperledger.justitia.scheduler.controller.channel;
 
+import org.hyperledger.justitia.common.bean.channel.ChannelMember;
 import org.hyperledger.justitia.common.face.service.channel.ConsortiumManageService;
 import org.hyperledger.justitia.common.bean.channel.ConsortiumInfo;
 import org.hyperledger.justitia.scheduler.utils.MultipartFileUtils;
@@ -40,7 +41,9 @@ public class ConsortiumManageController {
         String orgName = form.getOrgName();
         MultipartFile orgConfigFile = form.getOrgConfig();
         String orgConfig = MultipartFileUtils.readFileAsString(orgConfigFile);
-        manageService.addConsortiumMember(ordererName, consortiumName,orgName, orgConfig);
+        ChannelMember member = new ChannelMember(orgName);
+        member.setMemberConfig(orgConfig);
+        manageService.addConsortiumMember(ordererName, consortiumName, member);
         return new ResponseBean().success();
     }
 

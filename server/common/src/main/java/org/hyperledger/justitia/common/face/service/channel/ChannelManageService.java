@@ -13,8 +13,8 @@ public interface ChannelManageService {
     void peerJoinChannel(String channelId, Collection<String> peersId);
     List<ChannelInfo> getChannelsInfo();
     ChannelInfo getChannelInfo(String channelId);
-    List<String> getChannelMspId(String channelId);
-    InputStream getMemberConfig(String memberId);
+    List<String> getMembersMspId(String channelId);
+    InputStream generateMemberConfig();
     void addMember(String channelId, ChannelMember member, String description);
     void deleteMember(String channelId, String memberName, String description);
     void addAnchorPeer();

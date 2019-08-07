@@ -59,7 +59,7 @@ public class OrdererDao {
 
         OrdererInfo orderer = getOrderer(id);
         if (null == orderer) {
-            throw new IdentityException();
+            throw new IdentityException(IdentityException.ORDERER_DOES_NOT_EXITS, id);
         }
 
 

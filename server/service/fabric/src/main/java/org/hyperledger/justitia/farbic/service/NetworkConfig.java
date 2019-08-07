@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hyperledger.justitia.common.bean.FabricUserImpl;
 import org.hyperledger.justitia.common.utils.ParameterCheckUtils;
 
+@Deprecated
 public class NetworkConfig {
     private static final Log logger = LogFactory.getLog(NetworkConfig.class);
     private static NetworkConfig instance;

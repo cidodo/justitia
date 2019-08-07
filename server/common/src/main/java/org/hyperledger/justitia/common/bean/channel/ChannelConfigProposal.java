@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class ChannelConfigTask {
+public class ChannelConfigProposal {
     private String channelId;
     private String requester;
     private String proposalId;

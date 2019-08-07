@@ -1,20 +1,20 @@
 package org.hyperledger.justitia.common.bean.identity;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.hyperledger.justitia.common.bean.FabricUserImpl;
 import org.hyperledger.justitia.common.bean.identity.crypto.Crypto;
-import org.hyperledger.justitia.common.bean.identity.crypto.Msp;
 
 import java.io.IOException;
 
-@Data
 public class FabricUser extends Crypto{
-    private String id;
-    private String organizationId;
-    private Boolean admin;
-    private String tag;
+    @Setter @Getter private String id;
+    @Setter @Getter private String organizationId;
+    @Setter @Getter private Boolean admin;
+    @Setter @Getter private String tag;
 
-    private String mspId;
+    @Setter @Getter private String mspId;
     private FabricUserImpl fabricUser;
 
     public FabricUserImpl getFabricUser() throws IOException {

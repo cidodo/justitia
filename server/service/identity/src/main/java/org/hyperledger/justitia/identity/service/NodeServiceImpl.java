@@ -7,7 +7,7 @@ import org.hyperledger.justitia.common.face.service.identity.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Collection;
 
 @Service
 public class NodeServiceImpl implements NodeService {
@@ -19,7 +19,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<PeerInfo> getPeersInfo() {
+    public Collection<PeerInfo> getPeersInfo() {
         return identityConfig.getPeers();
     }
 
@@ -44,7 +44,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<OrdererInfo> getOrderersInfo() {
+    public Collection<OrdererInfo> getOrderersInfo() {
         return identityConfig.getOrderers();
     }
 
@@ -74,7 +74,7 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
-    public List<CouchdbInfo> getCouchdbsInfo() {
+    public Collection<CouchdbInfo> getCouchdbsInfo() {
         return null;
     }
 

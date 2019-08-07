@@ -9,7 +9,7 @@ public interface FabricToolsService {
      * congiftxgen
      */
     File generateGenesisBlock(String memberName, String mspId, File mspDirectory, String systemChainId, String consortium, ArrayList<String> ordererAddresses);
-    InputStream generateMemberConfig(String memberName, String mspId, File mspDirectory, String organizationName);
+    InputStream generateMemberConfig(String memberName, String mspId, File mspDirectory);
     byte[] generateCreateChannelTx(String memberName, String mspId, File mspDirectory, String channelId, String consortium);
 
     /**

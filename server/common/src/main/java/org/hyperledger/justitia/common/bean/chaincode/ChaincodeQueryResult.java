@@ -22,15 +22,6 @@ public class ChaincodeQueryResult {
             return;
         }
 
-        ProposalResponse response = responses.iterator().next();
-        chaincodeInfo = new ChaincodeInfo();
-        ChaincodeID chaincodeID = response.getChaincodeID();
-        chaincodeInfo.setName(chaincodeID.getName());
-        chaincodeInfo.setVersion(chaincodeID.getVersion());
-        chaincodeInfo.setPath(chaincodeID.getPath());
-
-
-
         for (ProposalResponse response : responses) {
             if (response.getStatus() == ProposalResponse.Status.SUCCESS) {
                 chaincodeInfo = new ChaincodeInfo();
@@ -54,6 +45,4 @@ public class ChaincodeQueryResult {
         }
         return payload.toString();
     }
-
-
 }
